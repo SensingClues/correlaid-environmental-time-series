@@ -1,0 +1,13 @@
+version: '3'
+services:
+  app:
+    build: ./docker
+    ports:
+      - "3838:3838"  # Shiny app
+      - "8888:8888"  # Jupyter notebooks
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+      - ./notebooks:/notebooks
+      - ./shiny_app:/srv/shiny-server
+
