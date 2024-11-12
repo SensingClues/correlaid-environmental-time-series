@@ -11,7 +11,7 @@ RUN apt-get update && \
 RUN pip3 install jupyter jupyter-client --break-system-packages
 
 # Install devtools and IRkernel from GitHub using devtools
-RUN R -e "install.packages(c('devtools', 'leaflet', 'shiny-server', 'shiny', 'shinyjs'))" && \
+RUN R -e "install.packages(c('devtools', 'leaflet', 'shiny-server', 'shiny', 'shinyjs', 'sf', 'terra', 'ggplot2', 'rasterVis', 'mapview', 'tmap'))" && \
     R -e "devtools::install_github('IRkernel/IRkernel')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
