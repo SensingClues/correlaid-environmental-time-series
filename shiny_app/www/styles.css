@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f7f7f7; /* Off-white color */
-  position: fixed; /* Optional: keeps navbar fixed at the top */
+  position: fixed; /* Keeps navbar fixed at the top */
   top: 0;
   left: 0;
   padding: 10px 0; /* Padding on top and bottom, no padding on left */
@@ -37,24 +37,31 @@
   margin-right: 20px;
 }
 
-/* Expand effect for Conservation Tools */
-.expandable:hover .expand-content {
-  display: flex;
-}
-
 /* Expanded content styling */
 .expand-content {
-  display: none;
+  display: flex;
   position: fixed; /* Fixed position to float above all content */
   left: 0; /* Align to the left side of the page */
   width: 100vw; /* Full viewport width */
   background-color: #f7f7f7; /* Match navbar background */
-  padding: 20px 0;
+  padding: 0 20px;
   flex-direction: row;
   justify-content: start;
   z-index: 1; /* Ensure it appears above other page content */
-  padding-left: 20px; /* Adjust as needed for space from left edge */
-  gap: 20px
+  gap: 20px;
+  
+  /* Animation properties */
+  max-height: 0; /* Start with zero height */
+  opacity: 0; /* Start fully transparent */
+  overflow: hidden; /* Hide overflow for the collapsing effect */
+  transition: max-height 0.3s ease, opacity 0.3s ease; /* Smooth transition for height and opacity */
+}
+
+/* Expand effect for Conservation Tools */
+.expandable:hover .expand-content {
+  max-height: 400px; /* Set max height for the expanded state (adjust as needed) */
+  opacity: 1; /* Fully visible */
+  padding: 20px 0; /* Add vertical padding in expanded state */
 }
 
 /* Grouped sections inside the expanded dropdown */
@@ -62,6 +69,7 @@
   display: flex;
   flex-direction: column;
   padding: 0 20px;
+  margin-left: 20px;
   max-width: 200px;
   background-color: #f7f7f7; /* Same background to blend */
 }
@@ -106,6 +114,7 @@
   }
 }
 
+/* Dropdown Item Styling */
 .dropdown-item {
   display: block; /* Forces each item to appear on a new line */
   text-decoration: none; /* Optional: removes underline */
@@ -116,3 +125,4 @@
 .dropdown-item:hover {
   color: #0073e6; /* Optional: change color on hover */
 }
+

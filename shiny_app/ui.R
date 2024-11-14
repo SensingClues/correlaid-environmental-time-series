@@ -24,17 +24,11 @@ shinyUI(fluidPage(
                   h4("Data Collection"),
                   actionLink("sensor_deployment", "Sensor Deployment", class = "dropdown-item"),
                   actionLink("camera_traps", "Camera Traps", class = "dropdown-item"),
-                  actionLink("drone_surveys", "Drone Surveys", class = "dropdown-item"),
-                  actionLink("environmental_monitoring", "Environmental Monitoring", class = "dropdown-item"),
-                  actionLink("biodiversity_tracking", "Biodiversity Tracking", class = "dropdown-item")
               ),
               div(class = "tools-group",
                   h4("Analysis"),
                   p("Data Processing"),
                   p("Species Recognition"),
-                  p("Habitat Mapping"),
-                  p("Threat Assessment"),
-                  p("Conservation Metrics")
               ),
          )
       ),
