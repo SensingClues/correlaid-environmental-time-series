@@ -1,25 +1,48 @@
-# ui.R
-
 library(shiny)
 
-# Define the UI for the app
-shinyUI(
-  fluidPage(
-    titlePanel("Simple Shiny App"),
-    
-    sidebarLayout(
-      sidebarPanel(
-        sliderInput("obs", 
-                    "Number of observations:", 
-                    min = 1, 
-                    max = 1000, 
-                    value = 500)
+# Define UI for the application
+shinyUI(fluidPage(
+  
+  # Add custom CSS for styling
+  includeCSS("www/styles.css"),
+  
+  # Top navigation bar
+  div(class = "navbar",
+      div(class = "nav-item icon", "🌿"),  # Placeholder icon
+      div(class = "nav-item", "Home"),
+      div(class = "nav-item expandable", "About",
+           div(class = "expand-content",
+              div(class = "about-group",
+                  h4("Correlaid"),
+                  p("Team"),
+              ),
+          ),
       ),
-      
-      mainPanel(
-        plotOutput("distPlot")
-      )
-    )
+      div(class = "nav-item expandable", "Conservation Tools",
+          div(class = "expand-content",
+              div(class = "tools-group",
+                  h4("Data Collection"),
+                  actionLink("sensor_deployment", "Sensor Deployment", class = "dropdown-item"),
+                  actionLink("camera_traps", "Camera Traps", class = "dropdown-item"),
+                  actionLink("drone_surveys", "Drone Surveys", class = "dropdown-item"),
+                  actionLink("environmental_monitoring", "Environmental Monitoring", class = "dropdown-item"),
+                  actionLink("biodiversity_tracking", "Biodiversity Tracking", class = "dropdown-item")
+              ),
+              div(class = "tools-group",
+                  h4("Analysis"),
+                  p("Data Processing"),
+                  p("Species Recognition"),
+                  p("Habitat Mapping"),
+                  p("Threat Assessment"),
+                  p("Conservation Metrics")
+              ),
+         )
+      ),
+  ),
+  
+  # Main content area
+  div(class = "content",
+      uiOutput("pageContent")
   )
-)
+))
 
