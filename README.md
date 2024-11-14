@@ -21,6 +21,8 @@ Once installed, open the Docker application to start the Docker daemon.
 
 The project follows this folder structure:
 
+
+
 ```
 project-root/
 ├── data/                      # Raw GIS data and processed files
