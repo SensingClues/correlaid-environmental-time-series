@@ -21,6 +21,9 @@ Once installed, open the Docker application to start the Docker daemon.
 
 The project follows this folder structure:
 
+
+
+```
 project-root/
 ├── data/                      # Raw GIS data and processed files
 │   ├── raw/                   # Original GIS files (e.g., shapefiles)
@@ -31,6 +34,8 @@ project-root/
 ├── shiny_app/                 # Shiny app directory
 │   ├── ui.R                   # UI component of the Shiny app
 │   ├── server.R               # Server logic for the Shiny app
+│   ├── pages/                 # Includes .R files corresponding to individual pages 
+│   ├── pages/*.R              # R script shiny pages 
 │   └── www/                   # Assets (CSS, JavaScript, images)
 ├── notebooks/                 # Jupyter notebooks for exploratory work
 │   └── example_notebook.ipynb # Example notebook in R
@@ -40,7 +45,41 @@ project-root/
 ├── .env                       # Environment variables
 ├── .gitignore                 # Git ignore file
 └── README.md                  # Project overview and instructions
+```
 
+### Shiny Server
+
+This Shiny app is designed for nature conservation projects, providing an interactive interface to monitor environmental data. It uses modular functions to organize different pages, making the codebase easy to extend and maintain. Each page is built using a dedicated UI and server function to handle content and interactivity.
+
+#### Page Structure
+The app consists of modular pages, each with a unique UI and server function:
+
+* projectOverviewUI and projectOverviewServer: Displays an overview of the project, including details about the partner organization, project goals, and timeline.
+* sensorDeploymentUI and sensorDeploymentServer: Provides a page with content focused on sensor deployment strategies and visualizations.
+
+Each page module is structured in its own file for better organization and includes:
+
+* UI Function: Defines the layout and static content.
+* Server Function: Contains dynamic elements, such as data rendering or interactive plots.
+
+#### Creating your own Shiny pages & scripts
+
+To add or modify a page, follow these steps:
+
+Create or Edit UI and Server Functions: Define a new UI function (e.g., newPageUI) and server function (newPageServer) for each page. Use tagList to organize content and elements within the UI.
+Add to Main App: Include the new page in the ui and server sections of the main Shiny app. For example:
+
+```r 
+ui = fluidPage(
+  newPageUI("newPageId")
+)
+
+server = function(input, output, session) {
+  newPageServer("newPageId")
+}
+```
+
+Look at the existing pages (for example pages/project_overview.R) to understand the basics.
 
 ### Launching the Project
 

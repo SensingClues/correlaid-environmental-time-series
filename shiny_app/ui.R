@@ -14,7 +14,7 @@ shinyUI(fluidPage(
            div(class = "expand-content",
               div(class = "about-group",
                   h4("Correlaid"),
-                  p("Team"),
+                  actionLink("project_overview", "Project Overview", class = "dropdown-item"),
               ),
           ),
       ),
