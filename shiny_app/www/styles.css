@@ -2,6 +2,8 @@
 * {
   margin: 0;
   padding: 0;
+  text-align: -webkit-left;
+  margin: 10px 0px;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
@@ -51,7 +53,7 @@
   background-color: #f7f7f7; /* Match navbar background */
   padding: 20px 0;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   z-index: 1; /* Ensure it appears above other page content */
   padding-left: 20px; /* Adjust as needed for space from left edge */
   gap: 20px
