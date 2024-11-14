@@ -21,6 +21,7 @@ Once installed, open the Docker application to start the Docker daemon.
 
 The project follows this folder structure:
 
+```
 project-root/
 ├── data/                      # Raw GIS data and processed files
 │   ├── raw/                   # Original GIS files (e.g., shapefiles)
@@ -42,6 +43,7 @@ project-root/
 ├── .env                       # Environment variables
 ├── .gitignore                 # Git ignore file
 └── README.md                  # Project overview and instructions
+```
 
 ### Shiny Server
 
