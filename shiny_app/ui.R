@@ -45,6 +45,11 @@ shinyUI(fluidPage(
   # Main content area
   div(class = "content",
       uiOutput("pageContent")
+  ),
+
+  div(class = "footer",
+    p("CorrelAid x Sensing Clues"),
+    p("Built with ❤️  by volunteers. ")
   )
 ))
 
