@@ -39,6 +39,28 @@
   margin-right: 20px;
 }
 
+.black-logo {
+  filter: brightness(0) saturate(100%);  /* Turns the image black */
+}
+
+.collab-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;  /* Space between logos and the "x" */
+}
+
+.collab-image {
+  width: 80px;          /* Adjust the size of the logos */
+  height: auto;         /* Maintains the aspect ratio */
+}
+
+.collab-separator {
+  font-size: 24px;      /* Adjust size of the "x" */
+  font-weight: bold;
+  color: #333;          /* Color of the "x" */
+}
+
 /* Expanded content styling */
 .expand-content {
   display: flex;
@@ -95,6 +117,7 @@
   
 /* Content */
 .content {
+  margin-top: 200px;
   padding: 20px;
   text-align: center;
 }

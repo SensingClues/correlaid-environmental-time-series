@@ -8,7 +8,15 @@ shinyUI(fluidPage(
   
   # Top navigation bar
   div(class = "navbar",
-      div(class = "nav-item icon", "🌿"),  # Placeholder icon
+    div(class = "collab-logo",
+        a(href = "https://sensingclues.org", target = "_blank",
+          img(src = "sensing-clues-logo.png", alt = "Sensing Clues Logo", class = "collab-image black-logo")
+        ),
+      span(class = "collab-separator", "×"),
+        a(href = "https://correlaid.nl", target = "_blank",
+          img(src = "logo.svg", alt = "Correlaid Logo", class = "collab-image")
+        )
+      ),
       div(class = "nav-item", "Home"),
       div(class = "nav-item expandable", "About",
            div(class = "expand-content",
