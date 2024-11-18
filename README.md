@@ -107,10 +107,6 @@ Links to Services
 Shiny Server: http://localhost:3838
 Jupyter Notebook: http://localhost:8888
 
-### Shiny App setup
-
-![Basic Shiny App Setup](imgs/shiny_app_setup.png)
-
 ### Notes
 
 Jupyter Notebook authentication is disabled for easy access.
