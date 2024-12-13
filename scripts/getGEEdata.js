@@ -4,16 +4,16 @@
 //  - script requires an AoI file to be available in the assets
 
 // Import the utilities module
-var utils = require('users/sverissimoines/default:utilsGEE.js');
+var utils = require('users/sverissimoines/default:utilsGEE.js'); // set path to GEE scripts folder <users/username/repository:utilsGEE.js>
 
 // Import the preprocessing module
-var preproc = require('users/sverissimoines/default:preprocGEE.js');
+var preproc = require('users/sverissimoines/default:preprocGEE.js'); // set path to GEE scripts folder <users/username/repository:preprocGEE.js>
 
 // load main parameters from file
-var params = require('users/sverissimoines/default:paramsGEE.js');
+var params = require('users/sverissimoines/default:paramsGEE.js'); // set path to GEE scripts folder <users/username/repository:paramsGEE.js>
 
 // Load the area of interest (AOI) from an asset.
-var aoi = utils.getAoI(params.aoiPath, params.countryName);
+var aoi = utils.getAoI(params.aoiPathDict, params.aoiPath, params.countryName);
 
 // Define the start and end dates
 var timeRange = utils.getDateRange(params.startYear, params.endYear, params.startMonth, params.endMonth);
@@ -22,14 +22,14 @@ var timeRange = utils.getDateRange(params.startYear, params.endYear, params.star
 var currentDate = timeRange.startDate;
 
 // Loop through each month
-while (currentDate.millis().lt(timeRange.endDate.millis())) {
-    // Print the current date
+while (currentDate.difference(timeRange.endDate, 'days').getInfo() < 0){
+    // Print the month that is being processed
     print('Processing date:', currentDate.format('YYYY-MM'));
 
     // Define the end of the "current" month
     var currentMonthEnd = currentDate.advance(1, 'month').advance(-1, 'second');
     
-    // Preprocess data for the current month
+    // Preprocess data
     //
     // Load the Sentinel-2 surface reflectance image collection.
     var collection = preproc.getCollection(aoi, currentDate, currentMonthEnd, params.filterCloud);
@@ -54,9 +54,9 @@ while (currentDate.millis().lt(timeRange.endDate.millis())) {
     // Export NDVI Image
     Export.image.toDrive({
         image: ndviComposite.clip(aoi),
-        description: currentDate.get('year') + '-' + (currentDate.get('month') < 10 ? '0' : '') + currentDate.get('month') + '_NDVI_' + params.countryName,
+        description: currentDate.format('YYYY-MM').getInfo() + '_NDVI_' + params.countryName,
         folder: params.outputFolder,
-        fileNamePrefix: currentDate.get('year') + '-' + (currentDate.get('month') < 10 ? '0' : '') + currentDate.get('month') + '_NDVI_' + params.countryName,
+        fileNamePrefix: currentDate.format('YYYY-MM').getInfo() + '_NDVI_' + params.countryName,
         region: aoi,
         scale: params.resolution,
         crs: params.crs, 

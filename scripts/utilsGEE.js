@@ -1,21 +1,9 @@
 // Export useful functions
 
-// Function to get country AoI from asset folder
-exports.getAoI = function getAoI(aoiPath, countryName) {
-    // Load the assets in the folder
-    var assets = ee.data.listAssets(aoiPath);
+// Function to get the AoI using a predefined dict of asset paths
+exports.getAoI = function getAoI(aoiPathDict, aoiPath, countryName) {
 
-    // Filter assets to find matches with the partial filename
-    var matchedAssets = assets.assets.filter(function(asset) {
-        return asset.name.includes(countryName);
-    });
-
-    // Return the absolute filename or a not found message
-    if (matchedAssets.length > 0) {
-        return ee.FeatureCollection(matchedAssets[0].name); // load the file
-    } else {
-        return "No asset matches the partial filename: " + countryName;
-    }
+    return ee.FeatureCollection(aoiPath+aoiPathDict[countryName]);
 }
 
 // Function to get date range
