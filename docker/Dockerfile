@@ -8,10 +8,10 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Jupyter and jupyter-client via pip
-RUN pip3 install jupyter jupyter-client --break-system-packages
+RUN pip3 install typer rich earthengine-api geemap jupyter jupyter-client --break-system-packages
 
 # Install devtools and IRkernel from GitHub using devtools
-RUN R -e "install.packages(c('devtools', 'leaflet', 'shiny-server', 'shiny', 'shinyjs', 'sf', 'terra', 'ggplot2', 'rasterVis', 'mapview', 'tmap', 'plotly'))" && \
+RUN R -e "install.packages(c('devtools', 'leaflet', 'shiny-server', 'shiny', 'shinyjs', 'sf', 'terra', 'ggplot2', 'patchwork', 'lubridate', 'rasterVis', 'mapview', 'tmap', 'plotly', 'nasapower'))" && \
     R -e "devtools::install_github('IRkernel/IRkernel')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
