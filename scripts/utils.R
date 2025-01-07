@@ -39,3 +39,64 @@ list_files_in_folder <- function(folder_path, include_full_path = TRUE) {
   
   return(files)
 }
+
+## get list of NDVI or AoI filenames for specific country
+get_filenames <- function(filepath = NULL, data_type = "NDVI",
+                          file_extension = ".tif", country_name = NULL) {
+
+  if (data_type == "NDVI") {
+    out_files <- get_ndvi_filenames(data_path = filepath,
+                                    file_extension = file_extension)
+  }
+
+  if (data_type == "AoI") {
+    out_files <- get_aoi_filenames(aoi_path = filepath,
+                                   file_extension = file_extension,
+                                   country_name = country_name)
+  }
+
+  cat("\nLoading", data_type, "data for", country_name, "\n", sep = " ")
+  return(out_files)
+}
+
+## get list of NDVI filenames in folder
+get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif") {
+
+  ndvi_files <- list.files(data_path,
+    pattern = paste0("NDVI", ".*", file_extension, "$")
+  )
+
+  return(ndvi_files)
+}
+
+## get list of aoi filenames in folder
+get_aoi_filenames <- function(aoi_path = NULL, file_extension = ".geojson",
+                              country_name = NULL) {
+
+  aoi_files <- list.files(aoi_path,
+    pattern = paste0("AoI", ".*", country_name, ".*", file_extension, "$")
+  )
+
+  return(aoi_files)
+}
+
+## given a list of filenames, extract date as YYYY-MM 
+## and return list of date strings
+extract_dates <- function(file_list = NULL) {
+
+  dates <- gsub("(\\d{4}-\\d{2})_.*", "\\1", file_list)
+
+  cat("\nFound data for", length(dates),
+      "months, from", min(dates), "to", max(dates), "\n", sep = " ")
+
+  return(dates)
+}
+
+## order file list by date
+order_by_date <- function(file_list = NULL, dates = NULL, decreasing = FALSE) {
+
+  file_list <- file_list[order(as.Date(paste0(dates, "-01")),
+                               decreasing = decreasing)]
+
+  return(file_list)
+}

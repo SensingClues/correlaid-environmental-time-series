@@ -38,9 +38,7 @@ shinyUI(fluidPage(
       div(class = "nav-item group cursor-pointer font-bold text-gray-700 hover:text-blue-500 relative", "Home"),
       div(class = "nav-item group cursor-pointer font-bold text-gray-700 hover:text-blue-500 relative", "About",
         div(class = "absolute left-0 mt-2 bg-gray-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-48",
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                h4(class = "font-semibold", "CorrelAid")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
+           div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 actionLink("project_overview", "Project Overview"))
         )
       ),
@@ -49,13 +47,7 @@ shinyUI(fluidPage(
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 h4(class = "font-semibold", "Data Collection")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("sensor_deployment", "Sensor Deployment")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("camera_traps", "Camera Traps")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                h4(class = "font-semibold", "Analysis")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", "Data Processing"),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", "Species Recognition")
+                actionLink("zambia_dashboard", "Zambia Dashboard"))
         )
       )
     )
