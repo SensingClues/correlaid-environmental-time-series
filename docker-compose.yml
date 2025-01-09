@@ -5,7 +5,7 @@ services:
     ports:
       - "3838:3838"
     volumes:
-      - ./shiny_app:/srv/shiny-server
+      - ./app:/srv/shiny-server
       - ./scripts:/scripts
       - ./data:/data
       
@@ -15,6 +15,7 @@ services:
     ports:
       - "8888:8888" # Map Jupyter notebook port
     volumes:
+       - ./app:/home/user/app
        - ./data:/home/user/data
        - ./scripts:/home/user/scripts
        - ./notebooks:/home/user/notebooks
