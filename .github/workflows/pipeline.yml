@@ -10,7 +10,7 @@ on:
   push:
     branches:
       - dev
-      # - main  # Adjust this as necessary
+      - main  # Adjust this as necessary
 
 env:
   # Path to shiny folder on server to deploy to
