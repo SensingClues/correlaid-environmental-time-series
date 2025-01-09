@@ -15,18 +15,11 @@ RUN R -e "install.packages(c('devtools', 'leaflet', 'shiny-server', 'shiny', 'sh
     R -e "devtools::install_github('IRkernel/IRkernel')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
-# Copy the Shiny app and notebooks to the image
-#COPY ./shiny_app/ /srv/shiny-server/
-#COPY ./notebooks/ /home/rstudio/notebooks/
+WORKDIR /home/user
 
-# Expose ports for both Shiny (3838) and Jupyter (8888)
-EXPOSE 3838
+# Expose ports for Jupyter (8888)
 EXPOSE 8888
 
-COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
-
 # Start both Shiny and Jupyter
-# CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]
-#CMD ["shiny-server"]
-CMD /bin/bash -c "shiny-server & jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' & wait"
+CMD /bin/bash -c "jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' "
 

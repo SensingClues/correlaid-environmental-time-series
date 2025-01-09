@@ -39,9 +39,10 @@ project-root/
 │   └── www/                   # Assets (CSS, JavaScript, images)
 ├── notebooks/                 # Jupyter notebooks for exploratory work
 │   └── example_notebook.ipynb # Example notebook in R
-├── docker/                    # Docker configuration
-│   ├── Dockerfile             # Dockerfile to set up the environment
-│   └── docker-compose.yml     # Compose file for easier container management
+├── shiny/                     # Docker configuration for the shiny app
+│   └── Dockerfile
+├── jupyter/                   # Docker configuration for the jupyter app
+│   └── Dockerfile
 ├── .env                       # Environment variables
 ├── .gitignore                 # Git ignore file
 └── README.md                  # Project overview and instructions
@@ -97,6 +98,20 @@ This command will:
 Build the Docker image and install all necessary dependencies.
 Start Shiny Server on port localhost:3838.
 Start Jupyter Notebook on port localhost:8888.
+
+### Laching a specific service
+
+Note that in this project there are multiple docker container. One for development, including jupyter notebooks, and another for running a shiny app. It is possible to build and launch a single service at a time. For example, to launch jupyter;
+
+```
+docker-compose up --build jupyter
+```
+
+and similarly, to launch the shiny local endpoint,
+
+```
+docker-compose up --build shiny
+```
 
 ### Stopping the Project
 To stop the running containers, use:
