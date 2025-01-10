@@ -1,13 +1,21 @@
 version: "3"
 services:
-  app:
-    build: ./docker
+  shiny:
+    build: ./shiny
     ports:
-      - "3838:3838"  # Shiny app
-      - "8888:8888"  # Jupyter notebooks
+      - "3838:3838"
     volumes:
-      - ./data:/data
+      - ./app:/srv/shiny-server
       - ./scripts:/scripts
-      - ./notebooks:/notebooks
-      - ./shiny_app:/srv/shiny-server
-
+      - ./data:/data
+      
+  jupyter:
+    build:
+      context: ./jupyter
+    ports:
+      - "8888:8888" # Map Jupyter notebook port
+    volumes:
+       - ./app:/home/user/app
+       - ./data:/home/user/data
+       - ./scripts:/home/user/scripts
+       - ./notebooks:/home/user/notebooks
