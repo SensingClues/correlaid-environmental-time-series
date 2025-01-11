@@ -100,3 +100,10 @@ order_by_date <- function(file_list = NULL, dates = NULL, decreasing = FALSE) {
 
   return(file_list)
 }
+
+## convert raster to data frame for ggplot
+raster_to_df <- function(raster, date) {
+  as.data.frame(raster, xy = TRUE) %>%
+    rename(Value = 3) %>%
+    mutate(YearMonth = date)
+}
