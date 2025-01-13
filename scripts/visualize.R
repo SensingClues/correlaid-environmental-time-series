@@ -57,3 +57,117 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
   # Return the plot
   return(ts_plot)
 }
+
+# Function to plot 2D maps for a specific month over several years
+plot_ndvi_maps <- function(data = NULL, month_to_plot = "01",
+                           plot_width = 15, plot_height = 8,
+                           zlim_range = c(-0.7, 0.7), ncol = 6,
+                           save_path = NULL, filename = "NDVI_maps.png") {
+  # Set plot size
+  options(repr.plot.width = plot_width, repr.plot.height = plot_height)
+
+  # Define a color map from brown to green
+  brgr_colors <- colorRampPalette(c("chocolate4", "darkgoldenrod1",
+                                    "darkgray", "yellowgreen", "forestgreen"))
+
+  # Filter the data for the specified month
+  data_filtered <- data[data$Month == month_to_plot, ]
+
+  # Generate the plot
+  map_plot <- ggplot(data_filtered, aes(x = x, y = y, fill = NDVI)) +
+    geom_raster() +
+    scale_fill_gradientn(colors = brgr_colors(10), limits = zlim_range,
+                         oob = scales::squish) +
+    facet_wrap(~ YearMonth, ncol = ncol) +
+    labs(
+      title = paste0("NDVI Over Years - ",
+                     month.name[as.numeric(month_to_plot)]),
+      fill = "NDVI",
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    theme_minimal() +
+    theme(
+      aspect.ratio = 2.5, # Keep a consistent aspect ratio
+      panel.spacing = unit(1, "lines"), # Space between panels
+      strip.text = element_text(size = 12), # Adjust facet labels
+      axis.text.x = element_text(hjust = 1, size = 15), 
+      axis.text.y = element_text(size = 15), 
+      axis.title.x = element_text(size = 20, margin = margin(15, 0, 0, 0)),
+      axis.title.y = element_text(size = 20, margin = margin(0, 15, 0, 0)),
+      plot.title = element_text(size = 20, hjust = 0.5)
+    )
+
+  # Save the plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the plot to the specified location
+    ggsave(filename = file.path(save_path, filename),
+           plot = map_plot, width = plot_width,
+           height = plot_height, units = "in")
+  }
+
+  # Return the plot
+  return(map_plot)
+}
+
+# Function to plot delta NDVI in a 2D map
+plot_delta_ndvi_map <- function(data = NULL, month_to_plot = "01",
+                                plot_width = 15, plot_height = 8,
+                                zlim_range = c(-.25, .25),
+                                save_path = NULL,
+                                filename = "deltaNDVI_maps.png") {
+  # Set plot size
+  options(repr.plot.width = plot_width, repr.plot.height = plot_height)
+
+  # Define a color map from brown to green
+  brgr_colors <- colorRampPalette(c("darkred", "firebrick1",
+                                    "darkgray", "yellowgreen", "darkgreen"))
+
+  # Filter the data for the specified month
+  data_filtered <- data[data$Month == month_to_plot, ]
+
+  # Generate the plot
+  map_plot <- ggplot(data_filtered, aes(x = x, y = y, fill = delta_ndvi)) +
+    geom_raster() +
+    scale_fill_gradientn(colors = brgr_colors(10), limits = zlim_range,
+                         oob = scales::squish) +
+    labs(
+      title = paste0("Delta NDVI - ",
+                     month.name[as.numeric(month_to_plot)]),
+      fill = "Delta NDVI",
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    theme_minimal() +
+    theme(
+      aspect.ratio = 2.5, # Keep a consistent aspect ratio
+      panel.spacing = unit(1, "lines"), # Space between panels
+      strip.text = element_text(size = 12), # Adjust facet labels
+      axis.text.x = element_text(hjust = 1, size = 15), 
+      axis.text.y = element_text(size = 15), 
+      axis.title.x = element_text(size = 20, margin = margin(15, 0, 0, 0)),
+      axis.title.y = element_text(size = 20, margin = margin(0, 15, 0, 0)),
+      plot.title = element_text(size = 20, hjust = 0.5)
+    )
+
+  # Save the plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the plot to the specified location
+    ggsave(filename = file.path(save_path, filename),
+           plot = map_plot, width = plot_width,
+           height = plot_height, units = "in")
+  }
+
+  # Return the plot
+  return(map_plot)
+}
