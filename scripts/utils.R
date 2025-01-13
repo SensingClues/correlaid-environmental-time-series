@@ -101,9 +101,99 @@ order_by_date <- function(file_list = NULL, dates = NULL, decreasing = FALSE) {
   return(file_list)
 }
 
-## convert raster to data frame for ggplot
+## get vector AoI data
+get_aoi_vector <- function(aoi_files = NULL, aoi_path = NULL,
+                           projection = "EPSG:4326") {
+
+  # load input Area of Interest (AoI) to later mask data
+  aoi_vec <- sf::st_read(paste0(aoi_path, aoi_files))
+
+  # transform (by projecting) AoI data to useful coordinate system
+  aoi_proj <- sf::st_transform(aoi_vec, projection)
+
+  return(aoi_proj)
+}
+
+## get raster NDVI data 
+get_ndvi_raster <- function(ndvi_files = NULL, data_path = NULL,
+                            projection = "EPSG:4326", dates = NULL,
+                            aoi_proj = NULL) {
+
+  # load raster data for all months, and stack
+  ndvi_rast <- terra::rast(paste0(data_path, ndvi_files))
+
+  # transform (by projecting) the raster data to useful coordinate system
+  ndvi_out <- terra::project(ndvi_rast, projection)
+
+  if (!is.null(aoi_proj)) {
+    # Mask the raster, to remove background values (if any).
+    ndvi_out <- terra::mask(ndvi_out, aoi_proj)
+  }
+
+  # change layer names for plotting
+  names(ndvi_out) <- c(dates)
+
+  # add time info for transformations
+  time(ndvi_out) <- as.Date(paste0(dates, "-01"))
+
+  return(ndvi_out)
+}
+
+## convert raster to dataframe
 raster_to_df <- function(raster, date) {
-  as.data.frame(raster, xy = TRUE) %>%
+  out_df <- as.data.frame(raster, xy = TRUE) %>%
     rename(Value = 3) %>%
     mutate(YearMonth = date)
+
+  return(out_df)
 }
+
+get_ndvi_df <- function(ndvi_rast = NULL, dates = NULL) {
+
+  # Extract raster layers for each date and store in dataframe
+  raster_dfs <- lapply(as.Date(paste0(dates, "-01")), function(date_key) {
+    raster_layer <- ndvi_rast[[time(ndvi_rast) == date_key]]
+    raster_to_df(raster_layer, date_key)
+  })
+
+  # Combine all data frames into one bigger one
+  ndvi_df <- bind_rows(raster_dfs)
+
+  # split dates into month and year columns
+  ndvi_df <- transform(ndvi_df,
+                       Year = format(YearMonth, "%Y"),
+                       Month = format(YearMonth, "%m"))
+
+  # change column name for plotting
+  colnames(ndvi_df)[3] <- "NDVI"
+
+  return(ndvi_df)
+}
+
+# calculate NDVI modulation in 2D space
+get_delta_ndvi_df <- function(train_ndvi_df = NULL, test_ndvi_df = NULL) {
+
+  ## Calculate mean value for each coordinate
+  # train data
+  train_ndvi_summary <- train_ndvi_df %>%
+    group_by(x,y, Month) %>%
+    summarize(mean_ndvi = mean(NDVI))
+
+  # test data
+  test_ndvi_summary <- test_ndvi_df %>%
+    group_by(x,y, Month) %>%
+    summarize(mean_ndvi = mean(NDVI))
+
+  # Join the two summaries
+  ndvi_comparison <- train_ndvi_summary %>%
+    inner_join(test_ndvi_summary, 
+               by = c("x", "y", "Month"), suffix = c("_train", "_test"))
+
+  # Get delta NDVI
+  delta_ndvi_df <- ndvi_comparison %>%
+    mutate(delta_ndvi = (mean_ndvi_test - mean_ndvi_train) / (mean_ndvi_test + mean_ndvi_train)) # normalized difference
+
+  return(delta_ndvi_df)
+}
+
+
