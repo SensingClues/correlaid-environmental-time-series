@@ -101,7 +101,7 @@ Start Jupyter Notebook on port localhost:8888.
 
 ### Laching a specific service
 
-Note that in this project there are multiple docker container. One for development, including jupyter notebooks, and another for running a shiny app. It is possible to build and launch a single service at a time. For example, to launch jupyter;
+Note that in this project there are multiple docker containers. One for development, including jupyter notebooks, and another for running a shiny app. It is possible to build and launch a single service at a time. For example, to launch jupyter;
 
 ```
 docker-compose up --build jupyter
@@ -127,5 +127,30 @@ Jupyter Notebook: http://localhost:8888
 Jupyter Notebook authentication is disabled for easy access.
 Modify shiny-server.conf in docker/ if you need to customize the Shiny app settings.
 This setup provides a convenient environment for developing and running both Shiny applications and Jupyter notebooks with GIS and data science capabilities.
+
+Currently, the local execution of notebooks depends on the data folder structure to be as follows:
+
+```
+data
+├── AoI
+├── LandUse
+└── NDVI
+    ├── Bulgaria
+    │   ├── 1000m_resolution
+    │   ├── 100m_resolution
+    │   └── 10m_resolution
+    ├── Kenya
+    │   ├── 1000m_resolution
+    │   ├── 100m_resolution
+    │   └── 10m_resolution
+    ├── Spain
+    │   ├── 1000m_resolution
+    │   ├── 100m_resolution
+    │   └── 10m_resolution
+    └── Zambia
+        ├── 1000m_resolution
+        ├── 100m_resolution
+        └── 10m_resolution
+```
 
 
