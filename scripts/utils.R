@@ -196,4 +196,20 @@ get_delta_ndvi_df <- function(train_ndvi_df = NULL, test_ndvi_df = NULL) {
   return(delta_ndvi_df)
 }
 
+# calculate NDVI mean, SD, and confidence intervals per month
+get_summary_ndvi_df <- function(ndvi_df = NULL) {
 
+  summary_ndvi_df <- ndvi_df %>%
+    group_by(Year, Month) %>%
+    summarize(
+      mean_ym_ndvi = mean(NDVI)
+    ) %>% # 1st get the monthly mean NDVI, for each year separately
+    group_by(Month) %>%
+    summarize(
+      mean_val = mean(mean_ym_ndvi),
+      lower_ci = mean(mean_ym_ndvi) - 1.96 * sd(mean_ym_ndvi) / sqrt(length(mean_ym_ndvi)), # 95% CI lower bound
+      upper_ci = mean(mean_ym_ndvi) + 1.96 * sd(mean_ym_ndvi) / sqrt(length(mean_ym_ndvi)) # 95% CI upper bound
+    )
+
+  return(summary_ndvi_df)
+}
