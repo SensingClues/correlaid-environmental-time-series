@@ -28,3 +28,6 @@ docker-compose.override.yml
 
 # Ignore macOS .DS_Store files
 .DS_Store
+
+# Ignore rosm cache files
+*\rosm.cache
