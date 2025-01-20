@@ -55,6 +55,12 @@ get_filenames <- function(filepath = NULL, data_type = "NDVI",
                                    country_name = country_name)
   }
 
+  if (data_type == "LandUseVector") {
+    out_files <- get_landuse_filenames(landuse_path = filepath,
+                                       file_extension = file_extension,
+                                       country_name = country_name)
+  }
+
   cat("\nLoading", data_type, "data for", country_name, "\n", sep = " ")
   return(out_files)
 }
@@ -67,6 +73,17 @@ get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif") {
   )
 
   return(ndvi_files)
+}
+
+## get list of land use filenames in folder
+get_landuse_filenames <- function(landuse_path = NULL, file_extension = ".geojson",
+                                  country_name = NULL) {
+
+  landuse_files <- list.files(landuse_path,
+    pattern = paste0(country_name, "_.*", file_extension, "$")
+  )
+
+  return(landuse_files)
 }
 
 ## get list of aoi filenames in folder
