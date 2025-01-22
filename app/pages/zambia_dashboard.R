@@ -1,78 +1,46 @@
 library(ggplot2)
+library(htmltools)
 library(terra)
 library(leaflet)
 library(tidyr)
 library(dplyr)
 
-source("../../scripts/utils.R")
-
-# Configuration List
-config <- list(
-  country_name = "Zambia",
-  data_type = "NDVI",
-  resolution = "250m",  # Update as needed
-  data_path = "../../data/2023-11_2024-10_NDVI_By_Life Connected/",
-  aoi_path = "../../data/aoi/",
-  latest_date = "2024-10-01"
-)
-
-# setup configuration file paths
-ndvi_files <- get_filenames(
-    filepath = config$data_path,
-    data_type = config$data_type,
-    file_extension = ".tif",
-    country_name = config$country_name
-)
-
-aoi_files <- get_filenames(
-    filepath = config$aoi_path,
-    data_type = "AoI",
-    file_extension = ".geojson",
-    country_name = config$country_name
-)
-
-date_list <- extract_dates(file_list = ndvi_files)
-
-ndvi_files <- order_by_date(
-    file_list = ndvi_files,
-    dates = date_list,
-    decreasing = FALSE
-)
-
-# load raster & mask data
-ndvi_rast <- terra::rast(paste0(config$data_path, ndvi_files))
-aoi_vec <- sf::st_read(paste0(config$aoi_path, aoi_files))
-
-# Common transformations: project a raster
-# see https://epsg.io/ for projection systems
-ndvi_proj <- terra::project(ndvi_rast, "EPSG:4326") 
-aoi_proj <- sf::st_transform(aoi_vec, "EPSG:4326") 
-
-## Mask the raster, to remove background values (if any).
-ndvi_msk <- terra::mask(ndvi_proj, aoi_proj)
-names(ndvi_msk) <- c(date_list)
-time(ndvi_msk) <- as.Date(paste0(date_list, "-01"))
-
+source("/srv/shiny-server/scripts/utils.R")
 
 # UI function for Sensor Deployment
 zambiaDashboardUI <- function(id) {
   ns <- NS(id)
 
   tagList(
-    h2("Zambia Dahsboard"),
-    p("Dashboard for the Zambia Region"),
-    p("Interactive Plot"),
-    plotOutput(ns("raster_output"), height="600px")
-  )
 
+    div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Description of the NDVI Timeseries"),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "The interactive NDVI timeseries plot provides insights into the vegetation trends for the Zambia region over the year. NDVI (Normalized Difference Vegetation Index) values range between 0 and 1, where higher values indicate healthier vegetation."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "The orange line represents the weighted average NDVI from 2019 to 2023, capturing seasonal variations in vegetation. Points on the line correspond to the mean NDVI for each month, while the shaded area represents the 95% confidence interval, providing an indication of variability across years."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "This plot highlights the temporal dynamics of vegetation, showing a peak in early months, a decline during the middle of the year, and a recovery toward the end. Such patterns are critical for understanding ecosystem health and planning conservation efforts.")
+    ),
+
+    htmlOutput(ns("plotly_html"))
+
+    # page continues below ...
+  )
 }
 # Server function for Sensor Deployment
 zambiaDashboardServer <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
   
-    output$raster_output <- renderPlot({
-      brgr.colors <- colorRampPalette(c("brown4", "darkgoldenrod1", "chartreuse4")) # define colormap, red brown to green
-      terra::plot(ndvi_msk[[time(ndvi_msk) == config$latest_date]], col=brgr.colors(10), range =c(-1, 1))
+    # include interactive timeseries
+    output$plotly_html <- renderUI({
+      tags$iframe(
+        src = "figures/zambia_ts_ndvi_plot.html",
+        width = "100%",
+        height = "800px",
+        frameborder = 0
+      )
     })
 
 
