@@ -6,8 +6,9 @@ services:
       - "3838:3838"
     volumes:
       - ./app:/srv/shiny-server
-      - ./scripts:/scripts
-      - ./data:/data
+      - ./scripts:/srv/shiny-server/scripts
+      - ./data:/srv/shiny-server/www/data
+      - ./figures:/srv/shiny-server/www/figures
       
   jupyter:
     build:
@@ -19,3 +20,4 @@ services:
        - ./data:/home/user/data
        - ./scripts:/home/user/scripts
        - ./notebooks:/home/user/notebooks
+       - ./figures:/home/user/figures
