@@ -5,7 +5,7 @@ library(leaflet)
 library(tidyr)
 library(dplyr)
 
-source("/srv/shiny-server/scripts/utils.R")
+source("utils.R")
 
 # UI function for Sensor Deployment
 zambiaDashboardUI <- function(id) {
