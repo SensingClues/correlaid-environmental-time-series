@@ -229,3 +229,58 @@ plot_delta_ndvi_map <- function(data = NULL, month_to_plot = "01",
   # Return the plot
   return(map_plot)
 }
+
+plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") {
+  # Get a list of all GeoJSON files in the folder
+  geojson_files <- list.files(folder_path, pattern = "\\.geojson$", full.names = TRUE)
+  
+  # Check if there are any GeoJSON files in the folder
+  if (length(geojson_files) == 0) {
+    stop("No GeoJSON files found in the specified folder.")
+  }
+  
+  # Extract filenames 
+  landuse_types <- tools::file_path_sans_ext(basename(geojson_files))
+  
+  # Define a set of colors for the different GeoJSON files
+  colors <- colorFactor(rainbow(length(landuse_types)), domain = landuse_types)
+  
+  # Create a leaflet map with the specified basemap
+  map <- leaflet() %>%
+    addProviderTiles(providers[[basemap]])
+  
+  # Loop through each GeoJSON file and add it to the map
+  for (i in seq_along(geojson_files)) {
+    file <- geojson_files[i]
+    landuse_type <- landuse_types[i]
+
+    # Read the GeoJSON file
+    geojson_data <- st_read(file)
+    
+    # Transform the GeoJSON data to WGS 84 (EPSG:4326)
+    geojson_data <- st_transform(geojson_data, crs = 4326)
+    
+    # Add the GeoJSON data to the map with a different color
+    map <- map %>%
+      addPolygons(data = geojson_data, color = colors(landuse_type), weight = 2, opacity = 0.5, fillOpacity = 0.2, group = landuse_type)
+  }
+  
+  # Add the layers control to the map
+  map <- map %>%
+    addLayersControl(
+      overlayGroups = landuse_types,
+      options = layersControlOptions(collapsed = FALSE)
+    )
+  
+  # Add legend to the map
+  map <- map %>%
+    addLegend("bottomright", 
+              pal = colors, 
+              values = landuse_types, 
+              title = "Land Use Type",
+              labFormat = labelFormat(transform = function(x) x),
+              opacity = 1)
+  
+  # Return the map
+  return(map)
+}
