@@ -58,6 +58,53 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
   return(ts_plot)
 }
 
+# Function to plot NDVI distribution per crop type, with confidence intervals. Assumes land_use column in train_data_grouped
+plot_grouped_training_ndvi_timeseries <- function(train_data_grouped = NULL,
+                                 country_name = NULL, resolution = NULL,
+                                 plot_width = 15, plot_height = 8,
+                                 ylim_range = c(0.15, 0.75),
+                                 save_path = NULL, filename = "NDVI_grouped_timeseries.png") {
+  # Set plot size
+  options(repr.plot.width = plot_width, repr.plot.height = plot_height)
+
+  # Create the plot
+  ts_plot <- ggplot(train_data_grouped, aes(x = Month, y = mean_val, color = land_use, group = land_use, fill = land_use)) +
+  geom_point(size = 5) +
+  geom_line() +
+  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2, color = NA) +
+  theme_minimal() +
+  labs(
+      title = paste0(country_name, " NDVI (", resolution, "m res)"),
+      x = "Month", 
+      y = "Mean NDVI",
+      color = "Land Use Type",
+      fill = "Land Use Type"
+  ) +
+  theme(
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 15),
+        axis.text.y = element_text(size = 15), 
+        axis.title.x = element_text(size = 20, margin = margin(15, 0, 0, 0)),
+        axis.title.y = element_text(size = 20, margin = margin(0, 15, 0, 0)),
+        plot.title = element_text(size = 20, hjust = 0.5)
+      ) +
+  ylim(ylim_range)
+
+  # Save plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the plot to the specified location
+    ggsave(filename = file.path(save_path, filename),plot = ts_plot,
+           width = plot_width, height = plot_height, units = "in")
+  }
+
+  # Return the plot
+  return(ts_plot)
+}
+
 # Function to plot 2D maps for a specific month over several years
 plot_ndvi_maps <- function(data = NULL, month_to_plot = "01",
                            plot_width = 15, plot_height = 8,
