@@ -15,8 +15,9 @@ scripts_dir <- file.path(dirname(app_dir), "shiny-server/scripts")
 figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures")
 data_dir <- file.path(dirname(app_dir), "shiny-server/www/data")
 
-source(file.path(scripts_dir, "utils.R"))
-source(file.path(scripts_dir, "visualize.R"))
+source(file.path(scripts_dir, "utils.R"), local = TRUE)
+source(file.path(scripts_dir, "visualize.R"), local = TRUE)
+source(file.path(scripts_dir, "generate_plots.R"), local = TRUE)
 
 # UI function for NDVI Timeseries Dashboard
 ndviTimeseriesUI <- function(id) {
@@ -76,79 +77,86 @@ ndviTimeseriesServer <- function(id) {
           dir.create(figures_dir, recursive = TRUE)
         }
 
-        ### Set paths and define additional parameters
-        data_type <- "NDVI"
-        # Input NVDI basemaps stored in country folder. 
-        data_path <- file.path(data_dir, paste0(data_type, "/", country_name, "/", resolution, "m_resolution/"))
-        # Area of Interest (AoI) files in AoI folder
-        aoi_path <- file.path(data_dir, "AoI/")
+        # create timeseries plot
+        generate_timeseries(country_name = country_name, resolution = resolution,
+                            end_year = end_year, end_month = end_month,
+                            figures_dir = figures_dir, data_dir = data_dir,
+                            return_plot = FALSE, figure_filename = figure_filename
+                            )
 
-        ## define end and start date for test data
-        end_date <- as.Date(paste(end_year, end_month, 1, sep="-"))
-        start_date <- seq(end_date, length = 2, by = "-11 months")[2]
+        # ### Set paths and define additional parameters
+        # data_type <- "NDVI"
+        # # Input NVDI basemaps stored in country folder. 
+        # data_path <- file.path(data_dir, paste0(data_type, "/", country_name, "/", resolution, "m_resolution/"))
+        # # Area of Interest (AoI) files in AoI folder
+        # aoi_path <- file.path(data_dir, "AoI/")
 
-        ### Get list of relevant filenames
-        ## Create lists with relevant filenames.
-        # NDVI filenames
-        ndvi_files <- get_filenames(filepath = data_path, data_type = data_type, 
-                                    file_extension = ".tif", country_name = country_name)
+        # ## define end and start date for test data
+        # end_date <- as.Date(paste(end_year, end_month, 1, sep="-"))
+        # start_date <- seq(end_date, length = 2, by = "-11 months")[2]
 
-        # AoI filenames
-        aoi_files <- get_filenames(filepath = aoi_path, data_type = "AoI", 
-                                file_extension = ".geojson", country_name = country_name)
+        # ### Get list of relevant filenames
+        # ## Create lists with relevant filenames.
+        # # NDVI filenames
+        # ndvi_files <- get_filenames(filepath = data_path, data_type = data_type, 
+        #                             file_extension = ".tif", country_name = country_name)
 
-        ### Subselect filenames according to date
-        # get NDVI filenames dataframe (includes date info)
-        files_df <- get_filename_df(ndvi_files = ndvi_files)
+        # # AoI filenames
+        # aoi_files <- get_filenames(filepath = aoi_path, data_type = "AoI", 
+        #                         file_extension = ".geojson", country_name = country_name)
 
-        # Given date selected, split file into test data and train data
-        # test filenames
-        test_files_df <- filter(files_df, between(dates, start_date, end_date))
-        # get train filenames
-        # (train interval: prior to test interval start)
-        train_files_df <- files_df[(files_df$dates< start_date),]
+        # ### Subselect filenames according to date
+        # # get NDVI filenames dataframe (includes date info)
+        # files_df <- get_filename_df(ndvi_files = ndvi_files)
 
-        ### Load raster and vector objects - Aoi, train data and test data
-        # load input Area of Interest (AoI) to later mask data
-        aoi_proj <- get_aoi_vector(aoi_files = aoi_files, aoi_path = aoi_path,
-                                projection = "EPSG:4326")
+        # # Given date selected, split file into test data and train data
+        # # test filenames
+        # test_files_df <- filter(files_df, between(dates, start_date, end_date))
+        # # get train filenames
+        # # (train interval: prior to test interval start)
+        # train_files_df <- files_df[(files_df$dates< start_date),]
 
-        test_ndvi_msk <- get_ndvi_raster(ndvi_files = test_files_df$filenames, data_path = data_path,
-                                    projection = "EPSG:4326", dates = test_files_df$dates,
-                                    aoi_proj = aoi_proj)
+        # ### Load raster and vector objects - Aoi, train data and test data
+        # # load input Area of Interest (AoI) to later mask data
+        # aoi_proj <- get_aoi_vector(aoi_files = aoi_files, aoi_path = aoi_path,
+        #                         projection = "EPSG:4326")
 
-        train_ndvi_msk <- get_ndvi_raster(ndvi_files = train_files_df$filenames, data_path = data_path,
-                                    projection = "EPSG:4326", dates = train_files_df$dates,
-                                    aoi_proj = aoi_proj)
+        # test_ndvi_msk <- get_ndvi_raster(ndvi_files = test_files_df$filenames, data_path = data_path,
+        #                             projection = "EPSG:4326", dates = test_files_df$dates,
+        #                             aoi_proj = aoi_proj)
 
-        ### Calculate mean NDVI for each month
-        # Extract raster layers for each date
-        # and store in dataframe
-        test_ndvi_df <- get_ndvi_df(ndvi_rast = test_ndvi_msk, dates = test_files_df$dates) 
-        train_ndvi_df <- get_ndvi_df(ndvi_rast = train_ndvi_msk, dates = train_files_df$dates) 
+        # train_ndvi_msk <- get_ndvi_raster(ndvi_files = train_files_df$filenames, data_path = data_path,
+        #                             projection = "EPSG:4326", dates = train_files_df$dates,
+        #                             aoi_proj = aoi_proj)
 
-        ## Compute mean, SD, and confidence intervals
-        # test data
-        test_ndvi_summary <- get_summary_ndvi_df(ndvi_df = test_ndvi_df)
-        # train data
-        train_ndvi_summary <- get_summary_ndvi_df(ndvi_df = train_ndvi_df)
+        # ### Calculate mean NDVI for each month
+        # # Extract raster layers for each date
+        # # and store in dataframe
+        # test_ndvi_df <- get_ndvi_df(ndvi_rast = test_ndvi_msk, dates = test_files_df$dates) 
+        # train_ndvi_df <- get_ndvi_df(ndvi_rast = train_ndvi_msk, dates = train_files_df$dates) 
 
-        ### Inspect distribution of NDVI values throughout the year.
-        ## Make plot
-        ndvi_ts_plot <- plot_ndvi_timeseries(train_data = train_ndvi_summary, 
-                                                test_data = test_ndvi_summary,
-                                                country_name = country_name, 
-                                                resolution = resolution,
-                                                plot_width = 15, 
-                                                plot_height = 8,
-                                                ylim_range = c(0.15, 0.75),
-                                                test_start_date = start_date,
-                                                test_end_date = end_date,
-                                                label_test = paste0("NDVI ", paste(format(c(start_date, end_date), "%b %Y"),collapse=" - ") ),
-                                                label_train = paste0("NDVI < ", format(start_date, "%b %Y") ),
-                                                save_path = figures_dir,
-                                                filename = figure_filename
-                                                )
+        # ## Compute mean, SD, and confidence intervals
+        # # test data
+        # test_ndvi_summary <- get_summary_ndvi_df(ndvi_df = test_ndvi_df)
+        # # train data
+        # train_ndvi_summary <- get_summary_ndvi_df(ndvi_df = train_ndvi_df)
+
+        # ### Inspect distribution of NDVI values throughout the year.
+        # ## Make plot
+        # ndvi_ts_plot <- plot_ndvi_timeseries(train_data = train_ndvi_summary, 
+        #                                         test_data = test_ndvi_summary,
+        #                                         country_name = country_name, 
+        #                                         resolution = resolution,
+        #                                         plot_width = 15, 
+        #                                         plot_height = 8,
+        #                                         ylim_range = c(0.15, 0.75),
+        #                                         test_start_date = start_date,
+        #                                         test_end_date = end_date,
+        #                                         label_test = paste0("NDVI ", paste(format(c(start_date, end_date), "%b %Y"),collapse=" - ") ),
+        #                                         label_train = paste0("NDVI < ", format(start_date, "%b %Y") ),
+        #                                         save_path = figures_dir,
+        #                                         filename = figure_filename
+        #                                         )
       }
 
     #   # Run the external script to generate the figure
