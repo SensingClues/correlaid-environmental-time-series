@@ -4,6 +4,7 @@ library(plotly)
 source("pages/sensor_deployment.R")
 source("pages/project_overview.R")
 source("pages/zambia_dashboard.R")
+source("pages/NDVI_timeseries.R")
 
 # Define server logic for displaying dynamic content
 shinyServer(function(input, output, session) {
@@ -22,6 +23,14 @@ shinyServer(function(input, output, session) {
       zambiaDashboardUI("zambiaDashboard") 
     })
     zambiaDashboardServer("zambiaDashboard")
+  })
+
+  # Define content to display when "NDVI Timeseries" is clicked
+  observeEvent(input$NDVI_timeseries, {
+    output$pageContent <- renderUI({
+      ndviTimeseriesUI("ndviTimeseries") 
+    })
+    ndviTimeseriesServer("ndviTimeseries")
   })
  
 
