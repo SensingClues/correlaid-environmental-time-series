@@ -12,7 +12,7 @@ app_dir <- normalizePath(getwd()) # Works in deployed apps or locally
 
 # Define paths relative to app.R
 scripts_dir <- file.path(dirname(app_dir), "shiny-server/scripts")
-figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures", "maps")
+figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures")
 data_dir <- file.path(dirname(app_dir), "shiny-server/www/data")
 
 source(file.path(scripts_dir, "utils.R"), local = TRUE)
@@ -28,9 +28,9 @@ ndviHeatmapUI <- function(id) {
     div(class = "project-section max-w-4xl mx-auto px-6 py-4",
         h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Heatmap Dashboard"),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore NDVI (Normalized Difference Vegetation Index) timeseries visualizations for different countries and time periods. Select a country, month, and year to generate a custom figure."),
+          "Generate and explore the Normalized Difference Vegetation Index (NDVI) value distribution over an area of interest. The map visualization shows the changes in vegetation for a specific month, across several years."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The visualization shows the temporal dynamics of vegetation for the selected region, including trends and seasonal variations.")
+          "To generate the figure, please select a country, month, and year.")
     ),
     
     # Controls for user input
@@ -39,7 +39,7 @@ ndviHeatmapUI <- function(id) {
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
           "NDVI values for the selected month, throughout the years."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The visualization shows the spatial dynamics of vegetation for the selected region."),
+          "White pixels (missing values) are due to cloud coverage."),
         selectInput(ns("country"), "Select Country:", 
                     choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
         selectInput(ns("month"), "Select Month:", choices = month.name),
@@ -145,7 +145,7 @@ ndviHeatmapServer <- function(id) {
       # Render
       output$streetmap_output <- renderUI({
         tags$iframe(
-            src = paste0("figures/maps/", figure_filename), #figure_path,
+            src = paste0("figures/", figure_filename), #figure_path,
             width = "100%",
             height = "500px",
             frameborder = 0)

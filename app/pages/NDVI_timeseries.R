@@ -28,9 +28,9 @@ ndviTimeseriesUI <- function(id) {
     div(class = "project-section max-w-4xl mx-auto px-6 py-4",
         h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Timeseries Dashboard"),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore NDVI (Normalized Difference Vegetation Index) timeseries visualizations for different countries and time periods. Select a country, month, and year to generate a custom figure."),
+          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest. The timeseries visualization shows the temporal dynamics of vegetation for the selected region for a 12-month period, including trends and seasonal variations."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The visualization shows the temporal dynamics of vegetation for the selected region, including trends and seasonal variations.")
+          "To generate the figure, please select a country, month, and year.")
     ),
     
     # Controls for user input
@@ -40,12 +40,12 @@ ndviTimeseriesUI <- function(id) {
         selectInput(ns("month"), "Select Month:", choices = month.name),
         numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
         selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                    choices = c(1000, 100, 10)),
+                    choices = c(1000, 100)),
         actionButton(ns("generate_plot"), "Generate Figure")
     ),
     
     # plot image
-    imageOutput(ns("plot_output"))
+    imageOutput(ns("plot_output"), width = "100%", height = "auto")
 
   )
 }
@@ -87,7 +87,7 @@ ndviTimeseriesServer <- function(id) {
 
       # Render
       output$plot_output <- renderImage({
-        list(src = figure_path,
+        list(src =  figure_path,
          width = "100%",
          alt = "NDVI timeseries")
         
