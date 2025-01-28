@@ -284,3 +284,65 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
   # Return the map
   return(map)
 }
+
+# Function to plot delta NDVI on a Leaflet map
+plot_delta_ndvi_streetview <- function(data = NULL, month_to_plot = "01",
+                                        zlim_range = c(-.25, .25),
+                                        basemap = "OpenStreetMap",
+                                        save_path = NULL, filename = "deltaNDVI_heatmap.html") {
+  if (is.null(data)) stop("The input data cannot be NULL.")
+  
+  # Filter the data for the specified month
+  data_filtered <- data %>%
+    filter(Month == month_to_plot)
+  
+  # Check if there is data for the specified month
+  if (nrow(data_filtered) == 0) stop(paste("No data available for month:", month_to_plot))
+  
+  # Define a color palette for Delta NDVI values
+  brgr_colors <- colorNumeric(
+    palette = c("darkred", "firebrick1", "darkgray", "yellowgreen", "darkgreen"),
+    domain = zlim_range,
+    na.color = NA
+  )
+    
+  # Add squishing to clamp out-of-bound values
+  data_filtered <- data_filtered %>%
+    mutate(delta_ndvi_clamped = scales::squish(delta_ndvi, zlim_range))  # Clamp values
+  
+  # Create the Leaflet map
+  map <- leaflet(data_filtered) %>%
+    addProviderTiles(providers[[basemap]]) %>%  # Add the basemap
+    addCircleMarkers(
+      lng = ~x,  # Longitude
+      lat = ~y,  # Latitude
+      radius = 4,  # Marker size
+      color = ~brgr_colors(delta_ndvi_clamped),  # Use clamped values for color
+      fillOpacity = 0.7,  # Circle transparency
+      popup = ~paste0(
+        "<b>Delta NDVI:</b> ", round(delta_ndvi, 2), "<br>",
+        "<b>Longitude:</b> ", round(x, 2), "<br>",
+        "<b>Latitude:</b> ", round(y, 2)
+      )  # Add popup for each point
+    ) %>%
+    addLegend(
+      "bottomright",  # Position of the legend
+      pal = brgr_colors,  # Use the same color palette
+      values = zlim_range,  # Range of Delta NDVI
+      title = "Delta NDVI",
+      opacity = 1
+    )
+
+  # Save the plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the map as an HTML file
+    saveWidget(map, file.path(save_path, filename), selfcontained = TRUE)
+  }
+  
+  return(map)  # Return the Leaflet map
+}
