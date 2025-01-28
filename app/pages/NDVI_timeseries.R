@@ -15,6 +15,7 @@ scripts_dir <- file.path(dirname(app_dir), "shiny-server/scripts")
 figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures")
 data_dir <- file.path(dirname(app_dir), "shiny-server/www/data")
 
+# Source helper scripts
 source(file.path(scripts_dir, "utils.R"), local = TRUE)
 source(file.path(scripts_dir, "visualize.R"), local = TRUE)
 source(file.path(scripts_dir, "generate_plots.R"), local = TRUE)
@@ -44,9 +45,8 @@ ndviTimeseriesUI <- function(id) {
         actionButton(ns("generate_plot"), "Generate Figure")
     ),
     
-    # plot image
-    imageOutput(ns("plot_output"), width = "100%", height = "auto")
-
+    # Output container (we'll fill this dynamically with either an image or an error message)
+    uiOutput(ns("plot_container"))
   )
 }
 
@@ -54,6 +54,12 @@ ndviTimeseriesUI <- function(id) {
 ndviTimeseriesServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    # Render a container for the plot or error message
+    output$plot_container <- renderUI({
+      # Default UI is just an image placeholder
+      imageOutput(ns("plot_output"), width = "100%", height = "auto")
+    })
 
     # Observe the Generate Figure button
     observeEvent(input$generate_plot, {
@@ -65,33 +71,62 @@ ndviTimeseriesServer <- function(id) {
       resolution <- input$resolution
 
       # Define script and figure paths
-      #script_path <- file.path(scripts_dir, "plot_timeseries.R")  # Path to the script
-      figure_filename <- paste0("figure_NDVItimeseries_", country_name, "_", end_month, "_", end_year, "_", resolution, "m", ".png")
+      figure_filename <- paste0("figure_NDVItimeseries_", country_name, "_", 
+                                end_month, "_", end_year, "_", resolution, "m", ".png")
       figure_path <- file.path(figures_dir, figure_filename)
       
-      # If figure not stored yet
-      if (!file.exists(figure_path)) {
+      # Wrap data generation in tryCatch to handle missing files/errors
+      tryCatch({
 
-        # Ensure the figures directory exists
-        if (!dir.exists(figures_dir)) {
-          dir.create(figures_dir, recursive = TRUE)
+        # If figure not stored yet, attempt to generate it
+        if (!file.exists(figure_path)) {
+          
+          # Ensure the figures directory exists
+          if (!dir.exists(figures_dir)) {
+            dir.create(figures_dir, recursive = TRUE)
+          }
+
+          # Create timeseries plot
+          generate_timeseries(
+            country_name   = country_name,
+            resolution     = resolution,
+            end_year       = end_year,
+            end_month      = end_month,
+            figures_dir    = figures_dir,
+            data_dir       = data_dir,
+            return_plot    = FALSE,
+            figure_filename= figure_filename
+          )
         }
 
-        # Create timeseries plot
-        generate_timeseries(country_name = country_name, resolution = resolution,
-                            end_year = end_year, end_month = end_month,
-                            figures_dir = figures_dir, data_dir = data_dir,
-                            return_plot = FALSE, figure_filename = figure_filename
-                            )
-      }
+        # If no error so far, render the image
+        output$plot_output <- renderImage({
+          list(
+            src   = figure_path,
+            width = "100%",
+            alt   = "NDVI timeseries"
+          )
+        }, deleteFile = FALSE)
 
-      # Render
-      output$plot_output <- renderImage({
-        list(src =  figure_path,
-         width = "100%",
-         alt = "NDVI timeseries")
+      }, error = function(e) {
         
-      }, deleteFile = FALSE)
+        # If an error occurs (commonly missing data), replace the default UI with a message
+        output$plot_container <- renderUI({
+          div(
+            style = "color: red; margin-top: 20px;",
+            strong("Error: "),
+            "An error occurred while generating or reading the NDVI timeseries data. ",
+            "This may be due to missing files or incorrect file paths. ",
+            "Please verify that the necessary data files exist in '", data_dir, "'.",
+            br(), br(),
+            paste("Details:", e$message)
+          )
+        })
+        
+        # Optionally, also log the error to the console for debugging
+        message("Error generating NDVI timeseries: ", e$message)
+      })
     })
   })
 }
+
