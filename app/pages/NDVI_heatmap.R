@@ -46,12 +46,24 @@ ndviHeatmapUI <- function(id) {
         numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
         selectInput(ns("resolution"), "Select spatial resolution (m):", 
                     choices = c(1000, 100)),
-        actionButton(ns("generate_plot"), "Generate Figure")
+        actionButton(ns("generate_static_plot"), "Generate Figure")
     ),
     
     # Plot image
-    imageOutput(ns("plot_output"), width = "100%", height = "auto"),
+    imageOutput(ns("map_output"), width = "100%", height = "auto"),
 
+    # Controls for user input
+    div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Delta NDVI Map"),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "NDVI heatmap for the selected month, over street view."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "The visualization shows the increase/decrease of vegetation for the selected region."),
+        actionButton(ns("generate_streetview_plot"), "Generate Figure")
+    ),
+    
+    # Plot street view image
+    htmlOutput(ns("streetmap_output"), width = "100%", height = "auto")
     
   )
 }
@@ -62,7 +74,7 @@ ndviHeatmapServer <- function(id) {
     ns <- session$ns
 
     # Observe the Generate Figure button
-    observeEvent(input$generate_plot, {
+    observeEvent(input$generate_static_plot, {
 
       # Get user inputs
       country_name <- input$country
@@ -92,12 +104,52 @@ ndviHeatmapServer <- function(id) {
       }
 
       # Render
-      output$plot_output <- renderImage({
+      output$map_output <- renderImage({
         list(src = figure_path,
          width = "100%",
          alt = "NDVI 2D map")
         
       }, deleteFile = FALSE)
+    })
+
+    # Observe the Generate Figure button
+    observeEvent(input$generate_streetview_plot, {
+
+      # Get user inputs
+      country_name <- input$country
+      map_month <- match(input$month, month.name)
+      map_year <- input$year
+      resolution <- input$resolution
+
+      # Define script and figure paths
+      figure_filename <- paste0("figure_deltaNDVImaps_", country_name, "_", map_month, "_", map_year, "_", resolution, "m", ".html")
+      figure_path <- file.path(figures_dir, figure_filename)
+      
+      # If figure not stored yet
+      if (!file.exists(figure_path)) {
+
+        # Ensure the figures directory exists
+        if (!dir.exists(figures_dir)) {
+          dir.create(figures_dir, recursive = TRUE)
+        }
+
+        # Create NDVI per Month plot
+        generate_2Dmap(country_name = country_name, resolution = resolution,
+                        map_year = map_year, map_month = map_month,
+                        figures_dir = figures_dir, data_dir = data_dir,
+                        return_plot = FALSE, plot_delta = TRUE,
+                        figure_filename = figure_filename
+                        )
+      }
+
+      # Render
+      output$streetmap_output <- renderUI({
+        tags$iframe(
+            src = paste0("figures/maps/", figure_filename), #figure_path,
+            width = "100%",
+            height = "500px",
+            frameborder = 0)
+      })
     })
   })
 }
