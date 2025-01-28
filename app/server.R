@@ -5,6 +5,7 @@ source("pages/sensor_deployment.R")
 source("pages/project_overview.R")
 source("pages/zambia_dashboard.R")
 source("pages/NDVI_timeseries.R")
+source("pages/NDVI_heatmap.R")
 
 # Define server logic for displaying dynamic content
 shinyServer(function(input, output, session) {
@@ -31,6 +32,14 @@ shinyServer(function(input, output, session) {
       ndviTimeseriesUI("ndviTimeseries") 
     })
     ndviTimeseriesServer("ndviTimeseries")
+  })
+
+  # Define content to display when "NDVI Heatmap" is clicked
+  observeEvent(input$NDVI_heatmap, {
+    output$pageContent <- renderUI({
+      ndviHeatmapUI("ndviHeatmap") 
+    })
+    ndviHeatmapServer("ndviHeatmap")
   })
  
 
