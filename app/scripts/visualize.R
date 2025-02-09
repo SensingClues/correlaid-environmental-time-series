@@ -48,9 +48,9 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
       plot.title = element_text(size = 20, hjust = 0.5)
     ) +
     ylim(ylim_range) +
-    geom_text(x = 10, y = ylim_range[2] - 0.05, label = label_test, size = 6,
+    geom_text(x = 8, y = ylim_range[2] - 0.05, label = label_test, size = 6,
               color = "#9662b3", hjust = 0) + # add text to label plot
-    geom_text(x = 10, y = ylim_range[2] - 0.1, label = label_train, size = 6,
+    geom_text(x = 8, y = ylim_range[2] - 0.1, label = label_train, size = 6,
               color = "#2781cf", hjust = 0) # add text to label plot
 
   # Save plot if save_path is provided
@@ -290,6 +290,9 @@ plot_delta_ndvi_streetview <- function(data = NULL, month_to_plot = "01",
                                         zlim_range = c(-.25, .25),
                                         basemap = "OpenStreetMap",
                                         save_path = NULL, filename = "deltaNDVI_heatmap.html") {
+                                          
+
+                                          # TODO ADD THE GEOJSON LAYERS TO THIS FUNCTION
   if (is.null(data)) stop("The input data cannot be NULL.")
   
   # Filter the data for the specified month

@@ -6,6 +6,7 @@ source("pages/project_overview.R")
 source("pages/zambia_dashboard.R")
 source("pages/NDVI_timeseries.R")
 source("pages/NDVI_heatmap.R")
+source("pages/LandCover_explorer.R")
 
 # Define server logic for displaying dynamic content
 shinyServer(function(input, output, session) {
@@ -40,6 +41,14 @@ shinyServer(function(input, output, session) {
       ndviHeatmapUI("ndviHeatmap") 
     })
     ndviHeatmapServer("ndviHeatmap")
+  })
+
+  # Define content to display when "Land Cover Explorer" is clicked
+  observeEvent(input$landCover_explorer, {
+    output$pageContent <- renderUI({
+      landCoverUI("landCover") 
+    })
+    landCoverServer("landCover")
   })
  
 

@@ -51,7 +51,9 @@ shinyUI(fluidPage(
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 actionLink("NDVI_timeseries", "NDVI Timeseries")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("NDVI_heatmap", "NDVI Heatmap"))
+                actionLink("NDVI_heatmap", "NDVI Heatmap")),
+            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500",
+                actionLink("landCover_explorer", "Land Cover Explorer"))
         )
       )
     )
