@@ -230,7 +230,11 @@ plot_delta_ndvi_map <- function(data = NULL, month_to_plot = "01",
   return(map_plot)
 }
 
-plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") {
+plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename = NULL, basemap = "OpenStreetMap") {
+
+  # print a sentence and the folder path
+  message(paste("Plotting GeoJSON files from folder:", folder_path))
+
   # Get a list of all GeoJSON files in the folder
   geojson_files <- list.files(folder_path, pattern = "\\.geojson$", full.names = TRUE)
   
@@ -255,10 +259,10 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
     landuse_type <- landuse_types[i]
 
     # Read the GeoJSON file
-    geojson_data <- st_read(file)
+    geojson_data <- sf::st_read(file)
     
     # Transform the GeoJSON data to WGS 84 (EPSG:4326)
-    geojson_data <- st_transform(geojson_data, crs = 4326)
+    geojson_data <- sf::st_transform(geojson_data, crs = 4326)
     
     # Add the GeoJSON data to the map with a different color
     map <- map %>%
@@ -280,6 +284,17 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
               title = "Land Use Type",
               labFormat = labelFormat(transform = function(x) x),
               opacity = 1)
+
+  # Save the plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the map as an HTML file
+    saveWidget(map, file.path(save_path, filename), selfcontained = TRUE)
+  }
   
   # Return the map
   return(map)

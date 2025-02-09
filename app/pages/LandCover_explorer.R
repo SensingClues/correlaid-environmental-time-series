@@ -48,8 +48,26 @@ landCoverUI <- function(id) {
     ),
     
     # Output container (we'll fill this dynamically with either an image or an error message)
-    uiOutput(ns("plot_container"))
+    uiOutput(ns("plot_container")),
+
+    # Controls for user input
+    div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Land Use Map"),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "Land use cover from the selected source."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "The visualization shows the distribution of land cover types from a static snapshot."),
+        selectInput(ns("country_lulc"), "Select Country:", 
+                    choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add mo
+
+        selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
+        actionButton(ns("generate_landcover_explorer"), "Generate Figure")
+    ),
+    
+    # Plot street view image (or error message)
+    uiOutput(ns("landcover_map_container"))
   )
+
 }
 
 # Server function for Land Cover Dashboard
@@ -61,6 +79,11 @@ landCoverServer <- function(id) {
     output$plot_container <- renderUI({
       # Default UI is just an image placeholder
       imageOutput(ns("plot_output"), width = "100%", height = "auto")
+    })
+
+    output$landcover_map_container <- renderUI({
+      # Placeholder content
+      htmlOutput(ns("landcover_map_output"), width = "100%", height = "auto")
     })
 
     # Observe the Generate Figure button
@@ -130,6 +153,72 @@ landCoverServer <- function(id) {
         
         # Optionally, also log the error to the console for debugging
         message("Error generating Land Cover NDVI Timeseries: ", e$message)
+      })
+    })
+
+    # Observe the Generate Figure button for the street view plot
+    observeEvent(input$generate_landcover_explorer, {
+
+      # Get user inputs
+      country_name <- input$country_lulc
+      map_year <- input$year_lulc
+      vector_src <- "S2_10m_LULC"
+
+      # Input geojsons stored in country folder. 
+      data_path <- paste0(data_dir, "/", "LandUse", "/", 
+                                country_name, "/", 
+                                vector_src, "_", map_year, "/")
+
+      # Define script and figure paths
+      figure_filename <- paste0("figure_LULCmap_", country_name, "_", vector_src, "_", map_year, ".html")
+      figure_path <- file.path(figures_dir, figure_filename)
+
+      # Use tryCatch to handle missing data or any errors
+      tryCatch({
+
+        # If figure not stored yet, try to generate it
+        if (!file.exists(figure_path)) {
+          
+          # Ensure the figures directory exists
+          if (!dir.exists(figures_dir)) {
+            dir.create(figures_dir, recursive = TRUE)
+          }
+
+          # Create explorer plot
+          plot_geojsons_from_a_folder(
+            folder_path = data_path,
+            save_path = figures_dir,
+            filename = figure_filename
+          )
+        }
+        
+        # Render the generated (or existing) HTML
+        output$landcover_map_output <- renderUI({
+          tags$iframe(
+            src = paste0("figures/", figure_filename),
+            width = "100%",
+            height = "500px",
+            frameborder = 0
+          )
+        })
+
+      }, error = function(e) {
+
+        # In case of error (likely missing data files), display a helpful message in the UI
+        output$landcover_map_container <- renderUI({
+          div(
+            style = "color: red;",
+            strong("Error: "),
+            "An error occurred while generating or reading the land use geojson data. ",
+            "This may be due to missing files or incorrect file paths. ",
+            "Please verify that the necessary data files exist in '", data_dir, "'.",
+            br(), br(),
+            paste("Details:", e$message)
+          )
+        })
+        
+        # You could also log the error or print it to console
+        message("Error generating land use map: ", e$message)
       })
     })
   })

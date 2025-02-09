@@ -231,6 +231,8 @@ plot_delta_ndvi_map <- function(data = NULL, month_to_plot = "01",
 }
 
 plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") {
+
+  message(paste("Plotting GeoJSON files from folder:", folder_path))
   # Get a list of all GeoJSON files in the folder
   geojson_files <- list.files(folder_path, pattern = "\\.geojson$", full.names = TRUE)
   
@@ -255,10 +257,10 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
     landuse_type <- landuse_types[i]
 
     # Read the GeoJSON file
-    geojson_data <- st_read(file)
+    geojson_data <- sf::st_read(file)
     
     # Transform the GeoJSON data to WGS 84 (EPSG:4326)
-    geojson_data <- st_transform(geojson_data, crs = 4326)
+    geojson_data <- sf::st_transform(geojson_data, crs = 4326)
     
     # Add the GeoJSON data to the map with a different color
     map <- map %>%
@@ -280,6 +282,8 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
               title = "Land Use Type",
               labFormat = labelFormat(transform = function(x) x),
               opacity = 1)
+
+  
   
   # Return the map
   return(map)
@@ -291,8 +295,6 @@ plot_delta_ndvi_streetview <- function(data = NULL, month_to_plot = "01",
                                         basemap = "OpenStreetMap",
                                         save_path = NULL, filename = "deltaNDVI_heatmap.html") {
                                           
-
-                                          # TODO ADD THE GEOJSON LAYERS TO THIS FUNCTION
   if (is.null(data)) stop("The input data cannot be NULL.")
   
   # Filter the data for the specified month

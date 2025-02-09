@@ -216,7 +216,7 @@ generate_timeseries_landcover <- function(country_name = NULL, resolution = NULL
   aoi_path <- file.path(data_dir, "AoI/")
 
   # Land use files path
-  lulc_path <- paste0("../data/LandUse/", country_name, "/", land_use_src, "/")
+  lulc_path <- file.path(data_dir, paste0("LandUse/", country_name, "/", land_use_src, "/"))
 
   ## define end and start date for test data
   end_date <- as.Date(paste(end_year, end_month, 1, sep="-"))
