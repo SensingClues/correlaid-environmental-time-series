@@ -66,6 +66,7 @@ landCoverUI <- function(id) {
 
 }
 
+
 # Server function for Land Cover Dashboard
 landCoverServer <- function(id) {
   moduleServer(id, function(input, output, session) {
