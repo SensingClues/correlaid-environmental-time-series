@@ -4,7 +4,7 @@ library(plotly)
 source("pages/sensor_deployment.R")
 source("pages/project_overview.R")
 source("pages/zambia_dashboard.R")
-source("pages/NDVI_timeseries.R")
+# source("pages/NDVI_timeseries.R")
 # source("pages/NDVI_heatmap.R")
 # source("pages/LandCover_explorer.R")
 
