@@ -16,7 +16,8 @@ figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures")
 data_dir <- file.path(dirname(app_dir), "shiny-server/www/data")
 
 # Source helper scripts
-source(file.path(scripts_dir, "utils.R"), local = TRUE)
+# source(file.path(scripts_dir, "utils.R"), local = TRUE) BUGFIX
+source("utils.R")
 source(file.path(scripts_dir, "visualize.R"), local = TRUE)
 source(file.path(scripts_dir, "generate_plots.R"), local = TRUE)
 
