@@ -17,7 +17,7 @@ source("generate_plots.R")
 
 
 figures_dir <- file.path("www/figures")
-data_dir <- file.path("www/data/")
+data_dir <- file.path("www/data")
 
 # UI function for NDVI Heatmap Dashboard
 ndviHeatmapUI <- function(id) {
