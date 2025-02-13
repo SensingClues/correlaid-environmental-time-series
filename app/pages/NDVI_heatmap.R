@@ -107,7 +107,7 @@ ndviHeatmapServer <- function(id) {
           if (!dir.exists(figures_dir)) {
             dir.create(figures_dir, recursive = TRUE)
           }
-          generate_2Dmap(country_name, resolution, map_year, map_month, figures_dir, data_dir, FALSE, TRUE, figure_filename)
+          generate_2Dmap(country_name, resolution, map_year, map_month, figures_dir, data_dir, TRUE, FALSE, figure_filename)
         }
         output$streetmap_output <- renderUI({
           tags$iframe(src = paste0("figures/", figure_filename), width = "100%", height = "500px", frameborder = 0)
