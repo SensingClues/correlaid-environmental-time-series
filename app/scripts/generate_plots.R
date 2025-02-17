@@ -236,7 +236,7 @@ generate_timeseries_landcover <- function(country_name = NULL, resolution = NULL
                             file_extension = ".geojson", country_name = country_name)
 
   # Get the desired land cover file
-  land_cover_file <- filter(lulc_files, grepl(land_cover_type, filenames))[1]
+  land_cover_file <- lulc_files[grepl(land_cover_type, lulc_files)][1]
 
   ### Subselect filenames according to date
   # get NDVI filenames dataframe (includes date info)
@@ -254,7 +254,7 @@ generate_timeseries_landcover <- function(country_name = NULL, resolution = NULL
   aoi_proj <- get_aoi_vector(aoi_files = aoi_files, aoi_path = aoi_path,
                         projection = "EPSG:4326")
 
-  land_use <- get_aoi_vector(aoi_files = land_cover_vector, aoi_path = lulc_path,
+  land_use <- get_aoi_vector(aoi_files = land_cover_file, aoi_path = lulc_path,
                               projection = "EPSG:4326")
 
   test_ndvi_msk <- get_ndvi_raster(ndvi_files = test_files_df$filenames, data_path = data_path,
