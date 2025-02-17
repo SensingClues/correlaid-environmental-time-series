@@ -117,7 +117,19 @@ ndviTimeseriesServer <- function(id) {
             "This may be due to missing files or incorrect file paths. ",
             "Please verify that the necessary data files exist in '", data_dir, "'.",
             br(), br(),
-            paste("Details:", e$message)
+            paste("Details:", e$message),
+            br(),
+            paste("Country Name:", country_name),
+            br(),
+            paste("Resolution:", resolution),
+            br(),
+            paste("End Year:", end_year),
+            br(),
+            paste("End Month:", end_month),
+            br(),
+            paste("Figures Directory:", figures_dir),
+            br(),
+            paste("Data Directory:", data_dir)
           )
         })
         
