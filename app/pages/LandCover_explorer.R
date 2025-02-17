@@ -11,14 +11,12 @@ library(htmlwidgets)
 app_dir <- normalizePath(getwd()) # Works in deployed apps or locally
 
 # Define paths relative to app.R
-scripts_dir <- file.path(dirname(app_dir), "shiny-server/scripts")
-figures_dir <- file.path(dirname(app_dir), "shiny-server/www/figures")
-data_dir <- file.path(dirname(app_dir), "shiny-server/www/data")
+source("utils.R")
+source("visualize.R")
+source("generate_plots.R")
 
-# Source helper scripts
-source(file.path(scripts_dir, "utils.R"), local = TRUE)
-source(file.path(scripts_dir, "visualize.R"), local = TRUE)
-source(file.path(scripts_dir, "generate_plots.R"), local = TRUE)
+figures_dir <- file.path("www/figures")
+data_dir <- file.path("www/data")
 
 # UI function for Land Cover Dashboard
 landCoverUI <- function(id) {
@@ -69,6 +67,7 @@ landCoverUI <- function(id) {
   )
 
 }
+
 
 # Server function for Land Cover Dashboard
 landCoverServer <- function(id) {
