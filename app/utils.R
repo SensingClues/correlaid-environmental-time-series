@@ -234,6 +234,10 @@ get_summary_ndvi_df <- function(ndvi_df = NULL) {
 # convert list of NDVI filenames to data frame
 get_filename_df <- function(ndvi_files = NULL) {
 
+  # Assert that ndvi_files is not empty
+  if (is.null(ndvi_files) || length(ndvi_files) == 0) {
+    stop("No NDVI files provided.")
+  }
   ## put filenames in table, with info for year and month
   files_df <- tibble(filenames = ndvi_files) %>%
     mutate(dates = gsub("(\\d{4}-\\d{2})_.*", "\\1", filenames))
