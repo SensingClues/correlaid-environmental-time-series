@@ -16,7 +16,7 @@ generate_timeseries <- function(country_name = NULL, resolution = NULL,
   # Input NVDI basemaps stored in country folder. 
   data_path <- file.path(data_dir, paste0(data_type, "/", 
                                 country_name, "/", 
-                                resolution, "m_resolution/"))
+                                resolution, "m_resolution"))
   # Area of Interest (AoI) files in AoI folder
   aoi_path <- file.path(data_dir, "AoI/")
 
