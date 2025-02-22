@@ -115,7 +115,7 @@ ndviTimeseriesServer <- function(id) {
             strong("Error: "),
             "An error occurred while generating or reading the NDVI timeseries data. ",
             "This may be due to missing files or incorrect file paths. ",
-            "Please verify that the necessary data files exist in '", data_dir, "'.", "working directory", getwd()
+            "Please verify that the necessary data files exist in '", data_dir, "'.", "working directory", app_dir
             br(), br(),
             paste("Details:", e$message),
             br(),
