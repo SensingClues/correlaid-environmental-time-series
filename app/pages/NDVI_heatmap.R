@@ -26,11 +26,13 @@ ndviHeatmapUI <- function(id) {
   tagList(
     # Title and description
     div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Heatmap Dashboard"),
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI 2D Heatmap Visualization"),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore the Normalized Difference Vegetation Index (NDVI) value distribution over an area of interest. The map visualization shows the changes in vegetation for a specific month, across several years."),
+          "The 2D heatmap provides a spatial representation of NDVI values across the selected region, with each pixel displaying the NDVI value at a specific geographic coordinate. This visualization allows users to identify spatial patterns in vegetation health, detect localized anomalies, and compare NDVI values across different areas within the AOI."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the figure, please select a country, month, and year.")
+          "In addition to absolute NDVI values, users can also compute the Delta NDVI, which represents the difference between the NDVI of the current month and the NDVI of the same month in previous years. The Delta NDVI heatmap highlights areas where vegetation health has improved or deteriorated compared to historical averages."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "To generate the heatmap, select a country, month, and year. The system will process the NDVI values and, if requested, compute the Delta NDVI to show how vegetation has changed relative to historical data.")
     ),
     
     # Controls for user input

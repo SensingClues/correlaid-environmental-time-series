@@ -3,6 +3,7 @@ library(plotly)
 
 source("pages/sensor_deployment.R")
 source("pages/project_overview.R")
+source("pages/data_collection.R")
 source("pages/zambia_dashboard.R")
 source("pages/NDVI_timeseries.R")
 source("pages/NDVI_heatmap.R")
@@ -11,12 +12,20 @@ source("pages/LandCover_explorer.R")
 # Define server logic for displaying dynamic content
 shinyServer(function(input, output, session) {
 
-  # Define content to display when "Sensor Deployment" is clicked
+  # Define content to display when "Project Overview" is clicked
   observeEvent(input$project_overview, {
     output$pageContent <- renderUI({
       projectOverviewUI("projectOverview")  # Call UI function for Sensor Deployment
     })
     projectOverviewServer("projectOverview")  # Call Server function for Sensor Deployment
+  })
+
+  # Define content to display when "Data Collection" is clicked
+  observeEvent(input$data_collection, {
+    output$pageContent <- renderUI({
+      dataOverviewUI("dataCollection") 
+    })
+    dataOverviewServer("dataCollection")
   })
 
   # Define content to display when "Sensor Deployment" is clicked

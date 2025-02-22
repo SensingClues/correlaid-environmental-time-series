@@ -25,11 +25,13 @@ landCoverUI <- function(id) {
   tagList(
     # Title and description
     div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Land Cover Dashboard"),
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Land Cover Visualization"),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest for a specific land cover type. The timeseries visualization shows the temporal dynamics of vegetation for the selected region for a 12-month period, including trends and seasonal variations."),
+          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest for a specific land cover type."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the figure, please select a country, month, year and land cover class.")
+          "Users can analyze how NDVI fluctuates throughout the year, observing peaks during growing seasons and declines during dry or non-growing periods. This visualization is particularly useful for agricultural monitoring, ecosystem assessments, and climate impact studies."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "To generate the figure, please select a country, month, year and land cover class. The system will process the NDVI values for the selected region and display the corresponding time-series chart for the land cover type.")
     ),
     
     # Controls for user input

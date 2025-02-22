@@ -25,11 +25,13 @@ ndviTimeseriesUI <- function(id) {
   tagList(
     # Title and description
     div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Timeseries Dashboard"),
+        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Timeseries Visualization"),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest. The timeseries visualization shows the temporal dynamics of vegetation for the selected region for a 12-month period, including trends and seasonal variations."),
+          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest."),
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the figure, please select a country, month, and year.")
+          "The timeseries visualization shows the temporal dynamics of vegetation for the selected region over a 12-month period, highlighting trends and seasonal variations in vegetation health. Higher NDVI values typically indicate denser and healthier vegetation, whereas lower values may signal sparse vegetation, stress, or land cover changes due to environmental factors such as drought, deforestation, or agricultural activity."),
+        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+          "To generate the figure, please select a country, month, and year. The system will process the NDVI values for the selected region and display the corresponding time-series chart, allowing for easy interpretation and comparison across different time periods.")
     ),
     
     # Controls for user input
