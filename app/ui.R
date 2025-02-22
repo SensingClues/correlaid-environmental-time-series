@@ -47,8 +47,6 @@ shinyUI(fluidPage(
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 actionLink("data_collection", "Data Collection")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("zambia_dashboard", "Zambia Dashboard")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 actionLink("NDVI_timeseries", "NDVI Timeseries")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
                 actionLink("NDVI_heatmap", "NDVI Heatmap")),

@@ -1,10 +1,8 @@
 library(shiny)
 library(plotly)
 
-source("pages/sensor_deployment.R")
 source("pages/project_overview.R")
 source("pages/data_collection.R")
-source("pages/zambia_dashboard.R")
 source("pages/NDVI_timeseries.R")
 source("pages/NDVI_heatmap.R")
 source("pages/LandCover_explorer.R")
@@ -26,14 +24,6 @@ shinyServer(function(input, output, session) {
       dataOverviewUI("dataCollection") 
     })
     dataOverviewServer("dataCollection")
-  })
-
-  # Define content to display when "Sensor Deployment" is clicked
-  observeEvent(input$zambia_dashboard, {
-    output$pageContent <- renderUI({
-      zambiaDashboardUI("zambiaDashboard") 
-    })
-    zambiaDashboardServer("zambiaDashboard")
   })
 
   # Define content to display when "NDVI Timeseries" is clicked
