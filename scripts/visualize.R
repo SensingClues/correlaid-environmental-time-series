@@ -7,12 +7,17 @@
 plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
                                  country_name = NULL, resolution = NULL,
                                  plot_width = 15, plot_height = 8,
-                                 ylim_range = c(0.15, 0.75),
+                                 ylim_range = NULL,
                                  test_start_date = NULL, test_end_date = NULL,
                                  label_test = "NDVI 2024",
                                  label_train = "NDVI 2019-2023",
                                  save_path = NULL,
                                  filename = "NDVI_timeseries.png") {
+
+  # Set y value range for plot
+  if (is.null(ylim_range)) {
+    ylim_range <- c(min(train_data$upper_ci)-0.25, max(train_data$upper_ci)+0.15)
+  }
 
   # Add Month Name to dataframes
   test_data$Month_Name <- month.name[as.numeric(test_data$Month)]
