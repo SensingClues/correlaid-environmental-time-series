@@ -34,12 +34,12 @@ ndviTimeseriesUI <- function(id) {
     
     # Controls for user input
     div(class = "controls max-w-4xl mx-auto px-6 py-4",
-        selectInput(ns("country"), "Select Country:", 
+        selectInput(ns("country"), "Select Country:", selected="Zambia",
                     choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
-        selectInput(ns("month"), "Select Month:", choices = month.name),
-        numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
+        selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
+        numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
         selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                    choices = c(1000, 100)),
+                    selected=100, choices = c(1000, 100)),
         actionButton(ns("generate_plot"), "Generate Figure")
     ),
     
