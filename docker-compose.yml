@@ -9,7 +9,6 @@ services:
       - ./scripts:/srv/shiny-server/scripts
       - ./app/www/data:/srv/shiny-server/www/data
       - ./figures:/srv/shiny-server/figures
-      - ./app/www/figures:/srv/shiny-server/www/figures
       
   jupyter:
     build:
