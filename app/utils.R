@@ -46,7 +46,8 @@ get_filenames <- function(filepath = NULL, data_type = "NDVI",
 
   if (data_type == "NDVI") {
     out_files <- get_ndvi_filenames(data_path = filepath,
-                                    file_extension = file_extension)
+                                    file_extension = file_extension,
+                                    country_name = country_name)
   }
 
   if (data_type == "AoI") {
@@ -66,10 +67,10 @@ get_filenames <- function(filepath = NULL, data_type = "NDVI",
 }
 
 ## get list of NDVI filenames in folder
-get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif") {
+get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif", country_name = NULL) {
 
   ndvi_files <- list.files(data_path,
-    pattern = paste0("NDVI", ".*", file_extension, "$")
+    pattern = paste0("NDVI", ".*", country_name, ".*", file_extension, "$")
   )
 
   return(ndvi_files)
