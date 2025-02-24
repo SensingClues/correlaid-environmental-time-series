@@ -58,7 +58,7 @@ landCoverUI <- function(id) {
         p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
           "The visualization shows the distribution of land cover types from a static snapshot."),
         selectInput(ns("country_lulc"), "Select Country:", 
-                    choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add mo
+                    choices = c("Zambia")),  # Add more countries as needed
 
         selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
         actionButton(ns("generate_landcover_explorer"), "Generate Figure")
@@ -187,7 +187,9 @@ landCoverServer <- function(id) {
 
           # Create explorer plot
           plot_geojsons_from_a_folder(
-            folder_path = data_path
+            folder_path = data_path,
+            save_path = figures_dir,
+            filename = figure_filename
           )
         }
         

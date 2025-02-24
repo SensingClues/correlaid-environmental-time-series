@@ -235,7 +235,7 @@ plot_delta_ndvi_map <- function(data = NULL, month_to_plot = "01",
   return(map_plot)
 }
 
-plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") {
+plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename = NULL, basemap = "OpenStreetMap") {
 
   message(paste("Plotting GeoJSON files from folder:", folder_path))
   # Get a list of all GeoJSON files in the folder
@@ -288,7 +288,16 @@ plot_geojsons_from_a_folder <- function(folder_path, basemap = "OpenStreetMap") 
               labFormat = labelFormat(transform = function(x) x),
               opacity = 1)
 
-  
+  # Save the plot if save_path is provided
+  if (!is.null(save_path)) {
+    # Ensure the save directory exists
+    if (!dir.exists(save_path)) {
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    # Save the map as an HTML file
+    saveWidget(map, file.path(save_path, filename), selfcontained = TRUE)
+  }
   
   # Return the map
   return(map)
