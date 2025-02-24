@@ -187,9 +187,7 @@ landCoverServer <- function(id) {
 
           # Create explorer plot
           plot_geojsons_from_a_folder(
-            folder_path = data_path,
-            save_path = figures_dir,
-            filename = figure_filename
+            folder_path = data_path
           )
         }
         
