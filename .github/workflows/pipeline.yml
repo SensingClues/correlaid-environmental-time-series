@@ -29,6 +29,7 @@ jobs:
       - name: Sync files to the Shiny Server directory
         run: |
           mkdir -p ${{ env.shiny-path }}
+          sudo chown -R $USER:$USER ${{ env.shiny-path }}
           rsync -av --delete ./repo/app/ ${{ env.shiny-path }}
           sudo chmod -R o+w ${{ env.shiny-path }}/www
           touch ${{ env.shiny-path }}/restart.txt
