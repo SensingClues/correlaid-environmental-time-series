@@ -66,6 +66,7 @@ RUN chmod -R a+w /usr/local/lib/R/site-library
 # Add home dir for the 'shiny' user, which is needed by renv
 RUN mkdir -p /home/shiny
 RUN chown shiny /home/shiny/
+RUN chmod -R 755 /srv/shiny-server/
 
 #RUN R -e "remotes::install_github('sensingclues/sensingcluesr')"
 EXPOSE 3838
