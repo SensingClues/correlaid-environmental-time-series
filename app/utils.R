@@ -46,7 +46,8 @@ get_filenames <- function(filepath = NULL, data_type = "NDVI",
 
   if (data_type == "NDVI") {
     out_files <- get_ndvi_filenames(data_path = filepath,
-                                    file_extension = file_extension)
+                                    file_extension = file_extension,
+                                    country_name = country_name)
   }
 
   if (data_type == "AoI") {
@@ -66,10 +67,10 @@ get_filenames <- function(filepath = NULL, data_type = "NDVI",
 }
 
 ## get list of NDVI filenames in folder
-get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif") {
+get_ndvi_filenames <- function(data_path = NULL, file_extension = ".tif", country_name = NULL) {
 
   ndvi_files <- list.files(data_path,
-    pattern = paste0("NDVI", ".*", file_extension, "$")
+    pattern = paste0("NDVI", ".*", country_name, ".*", file_extension, "$")
   )
 
   return(ndvi_files)
@@ -229,4 +230,26 @@ get_summary_ndvi_df <- function(ndvi_df = NULL) {
     )
 
   return(summary_ndvi_df)
+}
+
+# convert list of NDVI filenames to data frame
+get_filename_df <- function(ndvi_files = NULL) {
+
+  # Assert that ndvi_files is not empty
+  if (is.null(ndvi_files) || length(ndvi_files) == 0) {
+    stop("No NDVI files provided.")
+  }
+  ## put filenames in table, with info for year and month
+  files_df <- tibble(filenames = ndvi_files) %>%
+    mutate(dates = gsub("(\\d{4}-\\d{2})_.*", "\\1", filenames))
+  files_df <- separate(files_df, "dates", c("year", "month"), sep="-", remove=F)
+
+  # put dates into time operator
+  files_df$dates <- as.Date(paste0(files_df$dates, "-01"))
+
+  # turn year and month into int, for easier operations
+  files_df$year <- as.integer(files_df$year)
+  files_df$month <- as.integer(files_df$month)
+
+  return(files_df)
 }

@@ -134,6 +134,11 @@ Currently, the local execution of notebooks depends on the data folder structure
 data
 ├── AoI
 ├── LandUse
+│   └── Zambia
+│       └── S2_10m_LULC_2023
+│           ├── Zambia_Bare_ground_2023.geojson
+│           ├── Zambia_Crops_2023.geojson
+│           ├── ...
 └── NDVI
     ├── Bulgaria
     │   ├── 1000m_resolution
@@ -151,6 +156,5 @@ data
         ├── 1000m_resolution
         ├── 100m_resolution
         └── 10m_resolution
-```
 
 

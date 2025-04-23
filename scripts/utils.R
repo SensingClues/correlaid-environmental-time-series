@@ -230,3 +230,21 @@ get_summary_ndvi_df <- function(ndvi_df = NULL) {
 
   return(summary_ndvi_df)
 }
+
+# convert list of NDVI filenames to data frame
+get_filename_df <- function(ndvi_files = NULL) {
+
+  ## put filenames in table, with info for year and month
+  files_df <- tibble(filenames = ndvi_files) %>%
+    mutate(dates = gsub("(\\d{4}-\\d{2})_.*", "\\1", filenames))
+  files_df <- separate(files_df, "dates", c("year", "month"), sep="-", remove=F)
+
+  # put dates into time operator
+  files_df$dates <- as.Date(paste0(files_df$dates, "-01"))
+
+  # turn year and month into int, for easier operations
+  files_df$year <- as.integer(files_df$year)
+  files_df$month <- as.integer(files_df$month)
+
+  return(files_df)
+}

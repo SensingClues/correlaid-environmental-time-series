@@ -7,8 +7,8 @@ services:
     volumes:
       - ./app:/srv/shiny-server
       - ./scripts:/srv/shiny-server/scripts
-      - ./data:/srv/shiny-server/www/data
-      - ./figures:/srv/shiny-server/www/figures
+      - ./app/www/data:/srv/shiny-server/www/data
+      - ./app/www/figures:/srv/shiny-server/www/figures
       
   jupyter:
     build:
