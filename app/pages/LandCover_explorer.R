@@ -22,54 +22,67 @@ data_dir <- file.path("www/data")
 landCoverUI <- function(id) {
   ns <- NS(id)
   
-  tagList(
-    # Title and description
-    div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Land Cover Visualization"),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest for a specific land cover type."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Users can analyze how NDVI fluctuates throughout the year, observing peaks during growing seasons and declines during dry or non-growing periods. This visualization is particularly useful for agricultural monitoring, ecosystem assessments, and climate impact studies."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the figure, please select a country, month, year and land cover class. The system will process the NDVI values for the selected region and display the corresponding time-series chart for the land cover type.")
-    ),
+  fluidPage(
     
-    # Controls for user input
-    div(class = "controls max-w-4xl mx-auto px-6 py-4",
-        selectInput(ns("country"), "Select Country:", 
-                    choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
-        selectInput(ns("month"), "Select Month:", choices = month.name),
-        numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
-        selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                    choices = c(1000, 100)),
-        selectInput(ns("landcover_Type"), "Select Land Cover Type:", 
-                    choices = c("Crops", "Rangeland", "Water", "Trees", "Flooded_vegetation", "Built_Area", "Bare_ground")),    
-        actionButton(ns("generate_plot"), "Generate Figure")
-    ),
-    
-    # Output container (we'll fill this dynamically with either an image or an error message)
-    uiOutput(ns("plot_container")),
-
-    # Controls for user input
-    div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "Land Use Map"),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Land use cover from the selected source."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The visualization shows the distribution of land cover types from a static snapshot."),
-        selectInput(ns("country_lulc"), "Select Country:", 
-                    choices = c("Zambia")),  # Add more countries as needed
-
-        selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
-        actionButton(ns("generate_landcover_explorer"), "Generate Figure")
-    ),
-    
-    # Plot street view image (or error message)
-    uiOutput(ns("landcover_map_container"))
+    sidebarLayout(
+      sidebarPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series x Land Cover: NDVI"),
+            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
+              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest for a specific land cover type.",
+              a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
+        ),
+        # Controls for user input
+        div(class = "controls max-w-4xl mx-auto px-6 py-4",
+            selectInput(ns("country"), "Select Country:", 
+                        choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
+            selectInput(ns("month"), "Select Month:", choices = month.name),
+            numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
+            selectInput(ns("resolution"), "Select spatial resolution (m):", 
+                        choices = c(1000, 100)),
+            selectInput(ns("landcover_Type"), "Select Land Cover Type:", 
+                        choices = c("Crops", "Rangeland", "Water", "Trees", "Flooded_vegetation", "Built_Area", "Bare_ground")),    
+            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button")
+        ),
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            p(class = "text-lg text-white-700 leading-relaxed mb-2", "---------------"),
+            h2(class = "text-3xl font-bold text-white-800 mb-4", "Land Cover Map"),
+            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
+              "Land use cover from the selected source."),
+        ),
+        # Controls for user input
+        div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
+            selectInput(ns("country_lulc"), "Select Country:", 
+                        choices = c("Zambia")),  # Add more countries as needed
+            
+            selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
+            actionButton(ns("generate_landcover_explorer"), "Generate Map", class = "action_button")
+        ),
+      ),
+      
+      mainPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            # p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+            #   "Users can analyze how NDVI fluctuates throughout the year, observing peaks during growing seasons and declines during dry or non-growing periods. This visualization is particularly useful for agricultural monitoring, ecosystem assessments, and climate impact studies."),
+            p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+              "To generate the figure, please select a country, month, year and land cover class. The system will process the NDVI values for the selected region and display the corresponding time-series chart for the land cover type.")
+        ),
+        # Output container (we'll fill this dynamically with either an image or an error message)
+        uiOutput(ns("plot_container")),
+        br(),
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+              "The visualization shows the distribution of land cover types from a static snapshot."),
+        ),
+        # Plot street view image (or error message)
+        uiOutput(ns("landcover_map_container"))
+      )
+    )
   )
-
 }
-
 
 # Server function for Land Cover Dashboard
 landCoverServer <- function(id) {

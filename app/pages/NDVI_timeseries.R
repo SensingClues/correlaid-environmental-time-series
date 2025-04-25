@@ -22,31 +22,42 @@ data_dir <- file.path("www/data")
 ndviTimeseriesUI <- function(id) {
   ns <- NS(id)
   
-  tagList(
-    # Title and description
-    div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI Timeseries Visualization"),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The timeseries visualization shows the temporal dynamics of vegetation for the selected region over a 12-month period, highlighting trends and seasonal variations in vegetation health. Higher NDVI values typically indicate denser and healthier vegetation, whereas lower values may signal sparse vegetation, stress, or land cover changes due to environmental factors such as drought, deforestation, or agricultural activity."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the figure, please select a country, month, and year. The system will process the NDVI values for the selected region and display the corresponding time-series chart, allowing for easy interpretation and comparison across different time periods.")
-    ),
+  fluidPage(
     
-    # Controls for user input
-    div(class = "controls max-w-4xl mx-auto px-6 py-4",
-        selectInput(ns("country"), "Select Country:", selected="Zambia",
-                    choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
-        selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
-        numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
-        selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                    selected=100, choices = c(1000, 100)),
-        actionButton(ns("generate_plot"), "Generate Figure")
-    ),
-    
-    # Output container (we'll fill this dynamically with either an image or an error message)
-    uiOutput(ns("plot_container"))
+    sidebarLayout(
+      sidebarPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series Chart: NDVI"),
+            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
+              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest.",
+              a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
+        ),
+        # Controls for user input
+        div(class = "controls max-w-4xl mx-auto px-6 py-4",
+            selectInput(ns("country"), "Select Country:", selected="Zambia",
+                        choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
+            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
+            numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
+            selectInput(ns("resolution"), "Select spatial resolution (m):", 
+                        selected=100, choices = c(1000, 100)),
+            br(),
+            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button")
+        ),
+      ),
+      
+      mainPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            # p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2",
+            #   "The timeseries visualization shows the temporal dynamics of vegetation for the selected region over a 12-month period, highlighting trends and seasonal variations in vegetation health. Higher NDVI values typically indicate denser and healthier vegetation, whereas lower values may signal sparse vegetation, stress, or land cover changes due to environmental factors such as drought, deforestation, or agricultural activity."),
+            p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+              "To generate the figure, please select a country, month, and year. The system will process the NDVI values for the selected region and display the corresponding time-series chart, allowing for easy interpretation and comparison across different time periods.")
+        ),
+        # Output container (we'll fill this dynamically with either an image or an error message)
+        uiOutput(ns("plot_container"))
+      )
+    )
   )
 }
 

@@ -14,7 +14,7 @@ on:
 
 env:
   # Path to shiny folder on server to deploy to
-  shiny-path: ${{ github.ref == 'refs/heads/main' && '/deploy/data/shiny/apps/correlaid' || '/deploy/data/shiny/apps/test/correlaid' }}
+  shiny-path: ${{ github.ref == 'refs/heads/main' && '/deploy/data/shiny/apps/environmentaltimeseries' || '/deploy/data/shiny/apps/test/environmentaltimeseries' }}
 
 jobs:
   deploy-to-shiny-server:
