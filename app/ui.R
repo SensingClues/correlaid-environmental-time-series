@@ -39,17 +39,17 @@ shinyUI(fluidPage(
       div(class = "nav-item group cursor-pointer font-bold text-gray-700 hover:text-blue-500 relative", "About",
         div(class = "absolute left-0 mt-2 bg-gray-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-48",
            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("project_overview", "Project Overview"))
+                actionLink("project_overview", "Project Overview")),
+           div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
+               actionLink("data_collection", "Data Collection"))
         )
       ),
-      div(class = "nav-item group cursor-pointer font-bold text-gray-700 hover:text-blue-500 relative", "Conservation Tools",
+      div(class = "nav-item group cursor-pointer font-bold text-gray-700 hover:text-blue-500 relative", "Tools",
         div(class = "absolute left-0 mt-2 bg-gray-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-56",
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("data_collection", "Data Collection")),
+                actionLink("NDVI_timeseries", "Time Series Chart")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("NDVI_timeseries", "NDVI Timeseries")),
-            div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500", 
-                actionLink("NDVI_heatmap", "NDVI Heatmap")),
+                actionLink("NDVI_heatmap", "Time Series Map")),
             div(class = "py-2 px-4 hover:bg-gray-200 hover:text-blue-500",
                 actionLink("landCover_explorer", "Land Cover Explorer"))
         )
