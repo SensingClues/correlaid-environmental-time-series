@@ -3,6 +3,8 @@ library(shiny)
 # Define UI for the application
 shinyUI(fluidPage(
   
+  includeCSS("www/style.css"),
+  
   # Include Tailwind CDN
   tags$head(
     tags$link(rel = "stylesheet", href = "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"),

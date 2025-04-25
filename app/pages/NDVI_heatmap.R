@@ -23,37 +23,49 @@ data_dir <- file.path("www/data")
 ndviHeatmapUI <- function(id) {
   ns <- NS(id)
   
-  tagList(
-    # Title and description
-    div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-        h2(class = "text-3xl font-bold text-gray-800 mb-4", "NDVI 2D Heatmap Visualization"),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "The 2D heatmap provides a spatial representation of NDVI values across the selected region, with each pixel displaying the NDVI value at a specific geographic coordinate. This visualization allows users to identify spatial patterns in vegetation health, detect localized anomalies, and compare NDVI values across different areas within the AOI."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "In addition to absolute NDVI values, users can also compute the Delta NDVI, which represents the difference between the NDVI of the current month and the NDVI of the same month in previous years. The Delta NDVI heatmap highlights areas where vegetation health has improved or deteriorated compared to historical averages."),
-        p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
-          "To generate the heatmap, select a country, month, and year. The system will process the NDVI values and, if requested, compute the Delta NDVI to show how vegetation has changed relative to historical data.")
-    ),
+  fluidPage(
     
-    # Controls for user input
-    div(class = "controls max-w-4xl mx-auto px-6 py-4",
-        selectInput(ns("country"), "Select Country:", selected="Zambia",
-                    choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),
-        selectInput(ns("month"), "Select Month:", selected="January", choices = month.name),
-        numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
-        selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                    selected=100, choices = c(1000, 100)),
-        actionButton(ns("generate_static_plot"), "Generate Figure")
-    ),
-    
-    # Output container
-    uiOutput(ns("map_output_container")),
-    
-    div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
-        actionButton(ns("generate_streetview_plot"), "Generate Delta NDVI Figure")
-    ),
-    
-    uiOutput(ns("streetmap_output_container"))
+    sidebarLayout(
+      sidebarPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series Map: NDVI"),
+            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
+              "Visualize the Normalized Difference Vegetation Index (NDVI) values over time, and create a delta output.",
+              a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
+        ),
+        # Controls for user input
+        div(class = "controls max-w-4xl mx-auto px-6 py-4",
+            selectInput(ns("country"), "Select Country:", selected="Zambia",
+                        choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),
+            selectInput(ns("month"), "Select Month:", selected="January", choices = month.name),
+            numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
+            selectInput(ns("resolution"), "Select spatial resolution (m):", 
+                        selected=100, choices = c(1000, 100)),
+            actionButton(ns("generate_static_plot"), "Generate Map", class = "action_button"),
+            br(),
+            div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
+                actionButton(ns("generate_streetview_plot"), "Generate Delta", class = "action_button")
+            ),
+        ),
+      ),
+      
+      mainPanel(
+        # Title and description
+        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
+            # p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+            #   "The 2D heatmap provides a spatial representation of NDVI values across the selected region, with each pixel displaying the NDVI value at a specific geographic coordinate. This visualization allows users to identify spatial patterns in vegetation health, detect localized anomalies, and compare NDVI values across different areas within the AOI."),
+            # p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+            #   "In addition to absolute NDVI values, users can also compute the Delta NDVI, which represents the difference between the NDVI of the current month and the NDVI of the same month in previous years. The Delta NDVI heatmap highlights areas where vegetation health has improved or deteriorated compared to historical averages."),
+            p(class = "text-lg text-gray-700 leading-relaxed text-justify mb-2", 
+              "To generate the heatmap, select a country, month, and year. The system will process the NDVI values and, if requested, compute the Delta NDVI to show how vegetation has changed relative to historical data.")
+        ),
+        # Output container
+        uiOutput(ns("map_output_container")),
+        br(),
+        uiOutput(ns("streetmap_output_container"))
+      )
+    )
   )
 }
 
