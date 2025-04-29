@@ -35,8 +35,9 @@ landCoverUI <- function(id) {
         ),
         # Controls for user input
         div(class = "controls max-w-4xl mx-auto px-6 py-4",
-            selectInput(ns("country"), "Select Country:", 
-                        choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),  # Add more countries as needed
+            selectInput(ns("country"), "Select Project Area:", 
+                        choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
+                                    "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")), # Add more countries as needed
             selectInput(ns("month"), "Select Month:", choices = month.name),
             numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
@@ -54,8 +55,8 @@ landCoverUI <- function(id) {
         ),
         # Controls for user input
         div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
-            selectInput(ns("country_lulc"), "Select Country:", 
-                        choices = c("Zambia")),  # Add more countries as needed
+            selectInput(ns("country_lulc"), "Select Project Area:", 
+                        choices = c("Mponda, Zambia" = "Zambia")),  # Add more countries as needed
             
             selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
             actionButton(ns("generate_landcover_explorer"), "Generate Map", class = "action_button")
