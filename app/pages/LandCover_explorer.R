@@ -42,24 +42,12 @@ landCoverUI <- function(id) {
             numericInput(ns("year"), "Enter Year:", value = 2024, min = 2020, max = 2024),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
                         choices = c(1000, 100)),
+            selectInput(ns("land_cover"), "Select Land Cover Source:", choices = c("LULC, 2023" = "S2_10m_LULC,2023")),
             selectInput(ns("landcover_Type"), "Select Land Cover Type:", 
                         choices = c("Crops", "Rangeland", "Water", "Trees", "Flooded_vegetation", "Built_Area", "Bare_ground")),    
-            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button")
-        ),
-        # Title and description
-        div(class = "project-section max-w-4xl mx-auto px-6 py-4",
-            p(class = "text-lg text-white-700 leading-relaxed mb-2", "---------------"),
-            h2(class = "text-3xl font-bold text-white-800 mb-4", "Land Cover Map"),
-            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
-              "Land use cover from the selected source."),
-        ),
-        # Controls for user input
-        div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
-            selectInput(ns("country_lulc"), "Select Project Area:", 
-                        choices = c("Mponda, Zambia" = "Zambia")),  # Add more countries as needed
-            
-            selectInput(ns("year_lulc"), "Select Year:", choices = c("2023")),
-            actionButton(ns("generate_landcover_explorer"), "Generate Map", class = "action_button")
+            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button"),
+            br(), br(),
+            actionButton(ns("generate_landcover_explorer"), "Show Land Cover Map", class = "action_button")
         ),
       ),
       
@@ -175,9 +163,9 @@ landCoverServer <- function(id) {
     observeEvent(input$generate_landcover_explorer, {
 
       # Get user inputs
-      country_name <- input$country_lulc
-      map_year <- input$year_lulc
-      vector_src <- "S2_10m_LULC"
+      country_name <- input$country
+      map_year <- unlist(strsplit(input$land_cover, ","))[2]
+      vector_src <- unlist(strsplit(input$land_cover, ","))[1] # "S2_10m_LULC"
 
       # Input geojsons stored in country folder. 
       data_path <- paste0(data_dir, "/", "LandUse", "/", 
