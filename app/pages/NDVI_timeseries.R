@@ -16,7 +16,7 @@ source("visualize.R")
 source("generate_plots.R")
 
 figures_dir <- file.path("www/figures")
-data_dir <- file.path("www/data")
+data_dir <- file.path("/home/timeseries")
 
 # UI function for NDVI Timeseries Dashboard
 ndviTimeseriesUI <- function(id) {
