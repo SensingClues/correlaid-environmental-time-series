@@ -17,7 +17,7 @@ source("generate_plots.R")
 
 
 figures_dir <- file.path("www/figures")
-data_dir <- file.path("www/data")
+data_dir <- file.path("/home/timeseries")
 
 # UI function for NDVI Heatmap Dashboard
 ndviHeatmapUI <- function(id) {
@@ -36,8 +36,9 @@ ndviHeatmapUI <- function(id) {
         ),
         # Controls for user input
         div(class = "controls max-w-4xl mx-auto px-6 py-4",
-            selectInput(ns("country"), "Select Country:", selected="Zambia",
-                        choices = c("Zambia", "Spain", "Bulgaria", "Kenya")),
+            selectInput(ns("country"), "Select Project Area:", selected = "Zambia",
+                        choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
+                                    "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")),
             selectInput(ns("month"), "Select Month:", selected="January", choices = month.name),
             numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
