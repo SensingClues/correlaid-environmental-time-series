@@ -15,9 +15,6 @@ source("utils.R")
 source("visualize.R")
 source("generate_plots.R")
 
-figures_dir <- file.path("www/figures")
-data_dir <- file.path("/home/timeseries")
-
 # UI function for Land Cover Dashboard
 landCoverUI <- function(id) {
   ns <- NS(id)
@@ -77,6 +74,10 @@ landCoverUI <- function(id) {
 landCoverServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    # Set directories
+    figures_dir <- file.path("www/figures")
+    data_dir <- file.path("www/data")
     
     # Render a container for the plot or error message
     output$plot_container <- renderUI({

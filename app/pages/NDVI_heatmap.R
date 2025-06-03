@@ -15,10 +15,6 @@ source("utils.R")
 source("visualize.R")
 source("generate_plots.R")
 
-
-figures_dir <- file.path("www/figures")
-data_dir <- file.path("/home/timeseries")
-
 # UI function for NDVI Heatmap Dashboard
 ndviHeatmapUI <- function(id) {
   ns <- NS(id)
@@ -74,6 +70,10 @@ ndviHeatmapUI <- function(id) {
 ndviHeatmapServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+   
+     # Set directories
+    figures_dir <- file.path("www/figures")
+    data_dir <- file.path("www/data")
 
     output$map_output_container <- renderUI({
       imageOutput(ns("map_output"), width = "100%", height = "auto")
