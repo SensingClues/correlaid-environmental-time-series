@@ -73,7 +73,7 @@ ndviHeatmapServer <- function(id) {
    
      # Set directories
     figures_dir <- file.path("www/figures")
-    data_dir <- file.path("home/timeseries")
+    data_dir <- file.path("/home/timeseries")
 
     output$map_output_container <- renderUI({
       imageOutput(ns("map_output"), width = "100%", height = "auto")

@@ -72,7 +72,7 @@ ndviTimeseriesServer <- function(id) {
     
     # Set directories
     figures_dir <- file.path("www/figures")
-    data_dir <- file.path("home/timeseries")
+    data_dir <- file.path("/home/timeseries")
     
     # Render a container for the plot or error message
     output$plot_container <- renderUI({
