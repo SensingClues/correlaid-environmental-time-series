@@ -124,7 +124,7 @@ get_aoi_vector <- function(aoi_files = NULL, aoi_path = NULL,
                            projection = "EPSG:4326") {
 
   # load input Area of Interest (AoI) to later mask data
-  aoi_vec <- sf::st_read(paste0(aoi_path, aoi_files))
+  aoi_vec <- sf::st_read(file.path(aoi_path, aoi_files))
 
   # transform (by projecting) AoI data to useful coordinate system
   aoi_proj <- sf::st_transform(aoi_vec, projection)
@@ -138,7 +138,7 @@ get_ndvi_raster <- function(ndvi_files = NULL, data_path = NULL,
                             aoi_proj = NULL) {
 
   # load raster data for all months, and stack
-  ndvi_rast <- terra::rast(paste0(data_path, ndvi_files))
+  ndvi_rast <- terra::rast(file.path(data_path, ndvi_files))
 
   # transform (by projecting) the raster data to useful coordinate system
   ndvi_out <- terra::project(ndvi_rast, projection)

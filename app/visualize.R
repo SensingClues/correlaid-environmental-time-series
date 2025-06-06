@@ -24,13 +24,14 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
   train_data$Month_Name <- month.name[as.numeric(train_data$Month)]
 
   # Make month name vector, to customize order of x axis 
+  invisible(Sys.setlocale("LC_TIME", "C")) # or "English"
   month_vector <- format(seq(test_start_date, test_end_date, by="month"), "%B")
 
   # Set plot size
   options(repr.plot.width = plot_width, repr.plot.height = plot_height)
 
   # Create the plot
-  ts_plot <- ggplot(NULL, aes(x = factor(Month_Name, level=month_vector),
+  ts_plot <- ggplot(NULL, aes(x = factor(Month_Name, levels=month_vector),
                               y = mean_val, group = 1)) +
     geom_point(data = train_data, size = 5,
                fill = "#2781cf") + # point-average train data

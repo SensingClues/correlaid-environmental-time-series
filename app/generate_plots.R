@@ -18,7 +18,7 @@ generate_timeseries <- function(country_name = NULL, resolution = NULL,
                                 country_name, "/", 
                                 resolution, "m_resolution/"))
   # Area of Interest (AoI) files in AoI folder
-  aoi_path <- file.path(data_dir, "AoI/")
+  aoi_path <- file.path(data_dir, "AoI")
 
   ## define end and start date for test data
   end_date <- as.Date(paste(end_year, end_month, 1, sep="-"))
@@ -44,7 +44,7 @@ generate_timeseries <- function(country_name = NULL, resolution = NULL,
   # get train filenames (train interval: prior to test interval start)
   train_files_df <- files_df[(files_df$dates< start_date),]
 
-  ### Load raster and vector objects - Aoi, train data and test data
+    ### Load raster and vector objects - Aoi, train data and test data
   # load input Area of Interest (AoI) to later mask data
   aoi_proj <- get_aoi_vector(aoi_files = aoi_files, aoi_path = aoi_path,
                         projection = "EPSG:4326")
@@ -62,7 +62,7 @@ generate_timeseries <- function(country_name = NULL, resolution = NULL,
   # and store in dataframe
   test_ndvi_df <- get_ndvi_df(ndvi_rast = test_ndvi_msk, dates = test_files_df$dates) 
   train_ndvi_df <- get_ndvi_df(ndvi_rast = train_ndvi_msk, dates = train_files_df$dates) 
-
+  
   ## Compute mean, SD, and confidence intervals
   # test data
   test_ndvi_summary <- get_summary_ndvi_df(ndvi_df = test_ndvi_df)
