@@ -27,7 +27,7 @@ ndviTimeseriesUI <- function(id) {
         div(class = "project-section max-w-4xl mx-auto px-6 py-4",
             h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series Chart: NDVI"),
             p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
-              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest.",
+              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over the area of interest.",
               a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about"))
         ),
         # Controls for user input
@@ -35,10 +35,13 @@ ndviTimeseriesUI <- function(id) {
             selectInput(ns("country"), "Select Project Area:", selected = "Zambia",
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")), # Add more countries as needed
+            selectInput(ns("year"), "Select Year:", selected = 2025, choices = seq(2018, 2025, 1)),
             selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
-            numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                        selected=100, choices = c(1000, 100)),
+                        selected = "100 (ESA Sentinel-2)", 
+                        choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
+                                    "500 (Terra MODIS)" = "500", "250 (Terra MODIS)" = "250", "100 (ESA Sentinel-2)" = "100")),
+
             br(),
             actionButton(ns("generate_plot"), "Generate Figure", class = "action_button"),
             br(),
