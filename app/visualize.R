@@ -42,7 +42,7 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
                fill = "#9662b3") + # point-average test data
     theme_minimal() +
     labs(
-      title = paste0(country_name, " NDVI (", resolution, "m res)"),
+      title = paste0(country_name, " NDVI (", ifelse(grepl("_", resolution), sub(".*_", "", resolution), resolution), "m res)"),
       x = "Month",
       y = "Mean NDVI"
     ) +
@@ -91,7 +91,7 @@ plot_grouped_training_ndvi_timeseries <- function(train_data_grouped = NULL,
   geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2, color = NA) +
   theme_minimal() +
   labs(
-      title = paste0(country_name, " NDVI (", resolution, "m res)"),
+      title = paste0(country_name, " NDVI (", ifelse(grepl("_", resolution), sub(".*_", "", resolution), resolution), "m res)"),
       x = "Month", 
       y = "Mean NDVI",
       color = "Land Use Type",
@@ -144,7 +144,7 @@ plot_ndvi_maps <- function(data = NULL, month_to_plot = "01",
                          oob = scales::squish) +
     facet_wrap(~ YearMonth, ncol = ncol) +
     labs(
-      title = paste0("NDVI Over Years - ",
+      title = paste0("NDVI development over the years - ",
                      month.name[as.numeric(month_to_plot)]),
       fill = "NDVI",
       x = "Longitude",
