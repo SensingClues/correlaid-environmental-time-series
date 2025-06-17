@@ -24,13 +24,14 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
   train_data$Month_Name <- month.name[as.numeric(train_data$Month)]
 
   # Make month name vector, to customize order of x axis 
+  invisible(Sys.setlocale("LC_TIME", "C")) # or "English"
   month_vector <- format(seq(test_start_date, test_end_date, by="month"), "%B")
 
   # Set plot size
   options(repr.plot.width = plot_width, repr.plot.height = plot_height)
 
   # Create the plot
-  ts_plot <- ggplot(NULL, aes(x = factor(Month_Name, level=month_vector),
+  ts_plot <- ggplot(NULL, aes(x = factor(Month_Name, levels=month_vector),
                               y = mean_val, group = 1)) +
     geom_point(data = train_data, size = 5,
                fill = "#2781cf") + # point-average train data
@@ -41,7 +42,7 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
                fill = "#9662b3") + # point-average test data
     theme_minimal() +
     labs(
-      title = paste0(country_name, " NDVI (", resolution, "m res)"),
+      title = paste0(country_name, " NDVI (", ifelse(grepl("_", resolution), sub(".*_", "", resolution), resolution), "m res)"),
       x = "Month",
       y = "Mean NDVI"
     ) +
@@ -90,7 +91,7 @@ plot_grouped_training_ndvi_timeseries <- function(train_data_grouped = NULL,
   geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2, color = NA) +
   theme_minimal() +
   labs(
-      title = paste0(country_name, " NDVI (", resolution, "m res)"),
+      title = paste0(country_name, " NDVI (", ifelse(grepl("_", resolution), sub(".*_", "", resolution), resolution), "m res)"),
       x = "Month", 
       y = "Mean NDVI",
       color = "Land Use Type",
@@ -143,7 +144,7 @@ plot_ndvi_maps <- function(data = NULL, month_to_plot = "01",
                          oob = scales::squish) +
     facet_wrap(~ YearMonth, ncol = ncol) +
     labs(
-      title = paste0("NDVI Over Years - ",
+      title = paste0("NDVI development over the years - ",
                      month.name[as.numeric(month_to_plot)]),
       fill = "NDVI",
       x = "Longitude",

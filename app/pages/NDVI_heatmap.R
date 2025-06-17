@@ -15,10 +15,6 @@ source("utils.R")
 source("visualize.R")
 source("generate_plots.R")
 
-
-figures_dir <- file.path("www/figures")
-data_dir <- file.path("/home/timeseries")
-
 # UI function for NDVI Heatmap Dashboard
 ndviHeatmapUI <- function(id) {
   ns <- NS(id)
@@ -39,10 +35,12 @@ ndviHeatmapUI <- function(id) {
             selectInput(ns("country"), "Select Project Area:", selected = "Zambia",
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")),
-            selectInput(ns("month"), "Select Month:", selected="January", choices = month.name),
-            numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
+            selectInput(ns("year"), "Select Year:", selected = 2025, choices = seq(2018, 2025, 1)),
+            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                        selected=100, choices = c(1000, 100)),
+                        selected = "100 (ESA Sentinel-2)", 
+                        choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
+                                    "500 (Terra MODIS)" = "500", "250 (Terra MODIS)" = "250", "100 (ESA Sentinel-2)" = "100")),
             actionButton(ns("generate_static_plot"), "Generate Map", class = "action_button"),
             br(),
             div(class = "controls-delta max-w-4xl mx-auto px-6 py-4",
@@ -74,6 +72,10 @@ ndviHeatmapUI <- function(id) {
 ndviHeatmapServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+   
+     # Set directories
+    figures_dir <- file.path("www/figures")
+    data_dir <- file.path("/home/timeseries")
 
     output$map_output_container <- renderUI({
       imageOutput(ns("map_output"), width = "100%", height = "auto")

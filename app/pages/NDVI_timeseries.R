@@ -15,9 +15,6 @@ source("utils.R")
 source("visualize.R")
 source("generate_plots.R")
 
-figures_dir <- file.path("www/figures")
-data_dir <- file.path("/home/timeseries")
-
 # UI function for NDVI Timeseries Dashboard
 ndviTimeseriesUI <- function(id) {
   ns <- NS(id)
@@ -30,21 +27,30 @@ ndviTimeseriesUI <- function(id) {
         div(class = "project-section max-w-4xl mx-auto px-6 py-4",
             h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series Chart: NDVI"),
             p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
-              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over an area of interest.",
-              a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
+              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values, averaged over the area of interest.",
+              a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about"))
         ),
         # Controls for user input
         div(class = "controls max-w-4xl mx-auto px-6 py-4",
             selectInput(ns("country"), "Select Project Area:", selected = "Zambia",
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")), # Add more countries as needed
+            selectInput(ns("year"), "Select Year:", selected = 2025, choices = seq(2018, 2025, 1)),
             selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
-            numericInput(ns("year"), "Enter Year:", value = 2025, min = 2020, max = 2025),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
-                        selected=100, choices = c(1000, 100)),
+                        selected = "100 (ESA Sentinel-2)", 
+                        choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
+                                    "500 (Terra MODIS)" = "500", "250 (Terra MODIS)" = "250", "100 (ESA Sentinel-2)" = "100")),
+
             br(),
-            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button")
-        ),
+            actionButton(ns("generate_plot"), "Generate Figure", class = "action_button"),
+            br(),
+            br(),
+            # Adds leaflet map for the AoI
+            p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2",
+              "Selected project area:"),
+            leafletOutput(ns("map"), height = "250px")
+        )
       ),
       
       mainPanel(
@@ -67,6 +73,10 @@ ndviTimeseriesServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    # Set directories
+    figures_dir <- file.path("www/figures")
+    data_dir <- file.path("/home/timeseries")
+    
     # Render a container for the plot or error message
     output$plot_container <- renderUI({
       # Default UI is just an image placeholder
@@ -86,6 +96,20 @@ ndviTimeseriesServer <- function(id) {
       figure_filename <- paste0("figure_NDVItimeseries_", country_name, "_", 
                                 end_month, "_", end_year, "_", resolution, "m", ".png")
       figure_path <- file.path(figures_dir, figure_filename)
+      
+      # Define AoI filepath, load and transform it for use in Leaflet
+      aoi_files <- list.files(file.path(data_dir, "AoI"), pattern = paste0("AoI_.*", country_name, ".*\\.geojson$"))
+      aoi_shapefile <- sf::st_read(file.path(data_dir, "AoI", aoi_files))
+      aoi_shapefile <- sf::st_transform(aoi_shapefile, crs = 4326)
+      bounds <- sf::st_bbox(aoi_shapefile)
+      
+      # Define Leaflet map with selected area shapefile shown
+      output$map <- renderLeaflet({
+        leaflet() %>%
+          addTiles() %>%  # OpenStreetMap default
+          addGeoJSON(aoi_shapefile$geometry, color = "green", opacity = 0.5, fillOpacity = 0.2, smoothFactor = 0, weight = 2) %>%
+          fitBounds(bounds[[1]], bounds[[2]], bounds[[3]], bounds[[4]])
+      })
       
       # Wrap data generation in tryCatch to handle missing files/errors
       tryCatch({
