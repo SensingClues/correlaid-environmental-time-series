@@ -27,7 +27,7 @@ ndviHeatmapUI <- function(id) {
         div(class = "project-section max-w-4xl mx-auto px-6 py-4",
             h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series Map: NDVI"),
             p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
-              "Visualize the Normalized Difference Vegetation Index (NDVI) values over time, and create a delta output.",
+              "Visualize the Normalized Difference Vegetation Index (NDVI) values over time, and create a delta output. Select the year and month for which you want to analyze the 12 months preceding your selection.",
               a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
         ),
         # Controls for user input
