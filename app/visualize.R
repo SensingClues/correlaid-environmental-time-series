@@ -11,6 +11,7 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
                                  test_start_date = NULL, test_end_date = NULL,
                                  label_test = "NDVI 2024",
                                  label_train = "NDVI 2019-2023",
+                                 label_mean = "NDVI Average 2019-2023",
                                  save_path = NULL,
                                  filename = "NDVI_timeseries.png") {
   
@@ -54,10 +55,12 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
       plot.title = element_text(size = 20, hjust = 0.5)
     ) +
     ylim(ylim_range) +
-    geom_text(x = 8, y = ylim_range[2] - 0.05, label = label_test, size = 6,
+    geom_text(x = 8, y = ylim_range[2] - 0.025, label = label_test, size = 6,
               color = "#9662b3", hjust = 0) + # add text to label plot
-    geom_text(x = 8, y = ylim_range[2] - 0.1, label = label_train, size = 6,
-              color = "#2781cf", hjust = 0) # add text to label plot
+    geom_text(x = 8, y = ylim_range[2] - 0.075, label = label_train, size = 6,
+              color = "#2781cf", hjust = 0) + # add text to label plot
+    geom_text(x = 8, y = ylim_range[2] - 0.125, label = label_mean, size = 6,
+              color = "black", hjust = 0) # add text to label plot
 
   # Save plot if save_path is provided
   if (!is.null(save_path)) {

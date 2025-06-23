@@ -80,7 +80,8 @@ generate_timeseries <- function(country_name = NULL, resolution = NULL,
                                         test_start_date = start_date,
                                         test_end_date = end_date,
                                         label_test = paste0("NDVI ", paste(format(c(start_date, end_date), "%b %Y"),collapse=" - ") ),
-                                        label_train = paste0("NDVI < ", format(start_date, "%b %Y") ),
+                                        label_train = paste0("NDVI until ", format(start_date, "%b %Y") ),
+                                        label_mean = paste0("NDVI monthly average until ", format(start_date, "%b %Y") ),
                                         save_path = figures_dir,
                                         filename = figure_filename
                                         )
@@ -294,7 +295,8 @@ generate_timeseries_landcover <- function(country_name = NULL, resolution = NULL
                                         test_start_date = start_date,
                                         test_end_date = end_date,
                                         label_test = paste0(land_cover_type, " NDVI ", paste(format(c(start_date, end_date), "%b %Y"),collapse=" - ") ),
-                                        label_train = paste0(land_cover_type, " NDVI < ", format(start_date, "%b %Y") ),
+                                        label_train = paste0(land_cover_type, " NDVI until ", format(start_date, "%b %Y") ),
+                                        label_mean = paste0(land_cover_type, " NDVI monthly average until ", format(start_date, "%b %Y") ),
                                         save_path = figures_dir,
                                         filename = figure_filename
                                         )
