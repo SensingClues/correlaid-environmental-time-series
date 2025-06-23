@@ -35,8 +35,8 @@ ndviHeatmapUI <- function(id) {
             selectInput(ns("country"), "Select Project Area:", selected = "Zambia",
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")),
-            selectInput(ns("year"), "Select Year:", selected = 2025, choices = seq(2018, 2025, 1)),
-            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
+            selectInput(ns("year"), "Select Year:", selected = lubridate::year(Sys.Date()), choices = seq(2018, lubridate::year(Sys.Date()), 1)),
+            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name[1:lubridate::month(Sys.Date())-1]),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
                         selected = "100 (ESA Sentinel-2)", 
                         choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
@@ -76,6 +76,15 @@ ndviHeatmapServer <- function(id) {
      # Set directories
     figures_dir <- file.path("www/figures")
     data_dir <- file.path("/home/timeseries")
+    
+    observe({
+      req(input$year)
+      if (input$year == lubridate::year(Sys.Date())) { # current year
+        updateSelectInput(session, "month", choices = month.name[1:lubridate::month(Sys.Date())-1])
+      } else {
+        updateSelectInput(session, "month", choices = month.name)
+      }
+    })
 
     output$map_output_container <- renderUI({
       imageOutput(ns("map_output"), width = "100%", height = "auto")

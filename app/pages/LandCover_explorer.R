@@ -35,8 +35,8 @@ landCoverUI <- function(id) {
             selectInput(ns("country"), "Select Project Area:", 
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")), # Add more countries as needed
-            selectInput(ns("year"), "Select Year:", selected = 2024, choices = seq(2020, 2024, 1)),
-            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
+            selectInput(ns("year"), "Select Year:", selected = lubridate::year(Sys.Date()), choices = seq(2018, lubridate::year(Sys.Date()), 1)),
+            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name[1:lubridate::month(Sys.Date())-1]),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
                         selected = "100 (ESA Sentinel-2)", 
                         choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
@@ -83,6 +83,15 @@ landCoverServer <- function(id) {
     # Set directories
     figures_dir <- file.path("www/figures")
     data_dir <- file.path("/home/timeseries")
+    
+    observe({
+      req(input$year)
+      if (input$year == lubridate::year(Sys.Date())) { # current year
+        updateSelectInput(session, "month", choices = month.name[1:lubridate::month(Sys.Date())-1])
+      } else {
+        updateSelectInput(session, "month", choices = month.name)
+      }
+    })
     
     # Render a container for the plot or error message
     output$plot_container <- renderUI({
