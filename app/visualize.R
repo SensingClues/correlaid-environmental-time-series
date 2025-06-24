@@ -254,8 +254,7 @@ plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename 
   landuse_types <- tools::file_path_sans_ext(basename(geojson_files))
   
   # Define a set of colors for the different GeoJSON files
-  colors <- colorFactor(rainbow(length(landuse_types)), domain = landuse_types)
-  
+  colors <- colorFactor(c("#EDE9E4", "#ED022A", "#FFDB5C", "#87D19E", "#A7D282", "#358221", "#1A5BAB"), domain = landuse_types) # LULC colors
   # Create a leaflet map with the specified basemap
   map <- leaflet() %>%
     addProviderTiles(providers[[basemap]])
@@ -273,7 +272,9 @@ plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename 
     
     # Add the GeoJSON data to the map with a different color
     map <- map %>%
-      addPolygons(data = geojson_data, color = colors(landuse_type), weight = 2, opacity = 0.5, fillOpacity = 0.2, group = landuse_type)
+      addPolygons(data = geojson_data, color = colors(landuse_type), weight = 2, 
+                  opacity = 0.6, fillOpacity = 0.3, group = landuse_type,
+                  popup = paste("Area (hectares):", round(as.numeric(sf::st_area(geojson_data)) / 10000, 3)))
   }
   
   # Add the layers control to the map
