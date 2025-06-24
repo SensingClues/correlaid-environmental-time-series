@@ -1,4 +1,5 @@
 library(shiny)
+library(shinybusy)
 library(ggplot2)
 library(terra)
 library(leaflet)
@@ -69,7 +70,11 @@ landCoverUI <- function(id) {
               "The visualization shows the distribution of land cover types from a static snapshot."),
         ),
         # Plot street view image (or error message)
-        uiOutput(ns("landcover_map_container"))
+        uiOutput(ns("landcover_map_container")),
+        div(
+          style = "position: fixed; top: 45%; left: 60%; transform: translate(-50%, -50%);",
+          add_busy_spinner(spin = "fading-circle", width = "100px", height = "100px")
+        )
       )
     )
   )

@@ -1,4 +1,5 @@
 library(shiny)
+library(shinybusy)
 library(ggplot2)
 library(terra)
 library(leaflet)
@@ -62,7 +63,11 @@ ndviTimeseriesUI <- function(id) {
               "To generate the figure, please select a country, month, and year. The system will process the NDVI values for the selected region and display the corresponding time-series chart, allowing for easy interpretation and comparison across different time periods.")
         ),
         # Output container (we'll fill this dynamically with either an image or an error message)
-        uiOutput(ns("plot_container"))
+        uiOutput(ns("plot_container")),
+        div(
+          style = "position: fixed; top: 45%; left: 60%; transform: translate(-50%, -50%);",
+          add_busy_spinner(spin = "fading-circle", width = "100px", height = "100px")
+        )
       )
     )
   )

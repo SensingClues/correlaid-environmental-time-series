@@ -1,4 +1,5 @@
 library(shiny)
+library(shinybusy)
 library(ggplot2)
 library(terra)
 library(leaflet)
@@ -62,7 +63,11 @@ ndviHeatmapUI <- function(id) {
         # Output container
         uiOutput(ns("map_output_container")),
         br(),
-        uiOutput(ns("streetmap_output_container"))
+        uiOutput(ns("streetmap_output_container")),
+        div(
+          style = "position: fixed; top: 45%; left: 60%; transform: translate(-50%, -50%);",
+          add_busy_spinner(spin = "fading-circle", width = "100px", height = "100px")
+        )
       )
     )
   )
