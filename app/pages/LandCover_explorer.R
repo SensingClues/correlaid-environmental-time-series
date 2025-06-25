@@ -27,7 +27,7 @@ landCoverUI <- function(id) {
         div(class = "project-section max-w-4xl mx-auto px-6 py-4",
             h2(class = "text-3xl font-bold text-white-800 mb-4", "Time Series x Land Cover: NDVI"),
             p(class = "text-lg text-white-700 leading-relaxed text-justify mb-2", 
-              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values for a specific land cover type, averaged over a selected area of interest.",
+              "Generate and explore the Normalized Difference Vegetation Index (NDVI) values for a specific land cover type, averaged over a selected area of interest. Select the year and month for which you want to analyze the 12 months preceding your selection.",
               a(class = "text-blue-500 hover:underline", "Read more", href = "http://sensingclues.org/environmental-time-series-about")),
         ),
         # Controls for user input
@@ -35,8 +35,8 @@ landCoverUI <- function(id) {
             selectInput(ns("country"), "Select Project Area:", 
                         choices = c("Mponda, Zambia" = "Zambia", "Ancares Courel, Spain" = "Spain", 
                                     "Stara Planina, Bulgaria" = "Bulgaria", "Kasigau, Kenya" = "Kenya")), # Add more countries as needed
-            selectInput(ns("year"), "Select Year:", selected = 2024, choices = seq(2020, 2024, 1)),
-            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name),
+            selectInput(ns("year"), "Select Year:", selected = lubridate::year(Sys.Date()), choices = seq(2018, lubridate::year(Sys.Date()), 1)),
+            selectInput(ns("month"), "Select Month:", selected="January" , choices = month.name[1:lubridate::month(Sys.Date())-1]),
             selectInput(ns("resolution"), "Select spatial resolution (m):", 
                         selected = "100 (ESA Sentinel-2)", 
                         choices = c("1000 (ESA Sentinel-2)" = "Sentinel_1000", "1000 (Terra MODIS)" = "MODIS_1000",
@@ -82,7 +82,16 @@ landCoverServer <- function(id) {
     
     # Set directories
     figures_dir <- file.path("www/figures")
-    data_dir <- file.path("/home/timeseries")
+    data_dir <- file.path("www/data")
+    
+    observe({
+      req(input$year)
+      if (input$year == lubridate::year(Sys.Date())) { # current year
+        updateSelectInput(session, "month", choices = month.name[1:lubridate::month(Sys.Date())-1])
+      } else {
+        updateSelectInput(session, "month", choices = month.name)
+      }
+    })
     
     # Render a container for the plot or error message
     output$plot_container <- renderUI({

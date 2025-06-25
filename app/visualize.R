@@ -11,6 +11,7 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
                                  test_start_date = NULL, test_end_date = NULL,
                                  label_test = "NDVI 2024",
                                  label_train = "NDVI 2019-2023",
+                                 label_mean = "NDVI Average 2019-2023",
                                  save_path = NULL,
                                  filename = "NDVI_timeseries.png") {
   
@@ -54,10 +55,12 @@ plot_ndvi_timeseries <- function(train_data = NULL, test_data = NULL,
       plot.title = element_text(size = 20, hjust = 0.5)
     ) +
     ylim(ylim_range) +
-    geom_text(x = 8, y = ylim_range[2] - 0.05, label = label_test, size = 6,
+    geom_text(x = 8, y = ylim_range[2] - 0.025, label = label_test, size = 6,
               color = "#9662b3", hjust = 0) + # add text to label plot
-    geom_text(x = 8, y = ylim_range[2] - 0.1, label = label_train, size = 6,
-              color = "#2781cf", hjust = 0) # add text to label plot
+    geom_text(x = 8, y = ylim_range[2] - 0.075, label = label_train, size = 6,
+              color = "#2781cf", hjust = 0) + # add text to label plot
+    geom_text(x = 8, y = ylim_range[2] - 0.125, label = label_mean, size = 6,
+              color = "black", hjust = 0) # add text to label plot
 
   # Save plot if save_path is provided
   if (!is.null(save_path)) {
@@ -251,8 +254,7 @@ plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename 
   landuse_types <- tools::file_path_sans_ext(basename(geojson_files))
   
   # Define a set of colors for the different GeoJSON files
-  colors <- colorFactor(rainbow(length(landuse_types)), domain = landuse_types)
-  
+  colors <- colorFactor(c("#EDE9E4", "#ED022A", "#FFDB5C", "#87D19E", "#A7D282", "#358221", "#1A5BAB"), domain = landuse_types) # LULC colors
   # Create a leaflet map with the specified basemap
   map <- leaflet() %>%
     addProviderTiles(providers[[basemap]])
@@ -270,7 +272,9 @@ plot_geojsons_from_a_folder <- function(folder_path, save_path = NULL, filename 
     
     # Add the GeoJSON data to the map with a different color
     map <- map %>%
-      addPolygons(data = geojson_data, color = colors(landuse_type), weight = 2, opacity = 0.5, fillOpacity = 0.2, group = landuse_type)
+      addPolygons(data = geojson_data, color = colors(landuse_type), weight = 2, 
+                  opacity = 0.6, fillOpacity = 0.3, group = landuse_type,
+                  popup = paste("Area (hectares):", round(as.numeric(sf::st_area(geojson_data)) / 10000, 3)))
   }
   
   # Add the layers control to the map
